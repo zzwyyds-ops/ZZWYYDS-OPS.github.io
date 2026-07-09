@@ -1,145 +1,151 @@
 export const pageCopy = {
-  headerHomeLabel: "LumiEmbed Space \u9996\u9875",
-  headerNavLabel: "\u4e3b\u5bfc\u822a",
-  headerCta: "\u8054\u7cfb\u6211",
+  headerHomeLabel: "LumiEmbed Space 首页",
+  headerNavLabel: "主导航",
+  headerCta: "联系我",
   hero: {
-    note: "\u5d4c\u5165\u5f0f\u4f5c\u54c1\u96c6 / \u8fb9\u7f18\u89c6\u89c9\u5b9e\u9a8c\u5ba4",
+    note: "嵌入式作品集 / 边缘视觉实验室",
     subtitle:
-      "\u4e00\u4e2a\u805a\u7126\u5d4c\u5165\u5f0f\u7cfb\u7edf\u3001\u673a\u5668\u89c6\u89c9\u4e0e\u8fb9\u7f18\u8bbe\u5907\u5b9e\u9a8c\u7684\u4e2a\u4eba\u4f5c\u54c1\u96c6\uff0c\u7528\u66f4\u514b\u5236\u7684\u4ea4\u4e92\u4e0e\u66f4\u6e05\u6670\u7684\u8868\u8fbe\uff0c\u5448\u73b0\u6280\u672f\u9879\u76ee\u7684\u6e29\u5ea6\u4e0e\u8d28\u611f\u3002",
-    actionsLabel: "\u4e3b\u8981\u64cd\u4f5c",
-    primaryCta: "\u67e5\u770b\u4f5c\u54c1",
-    secondaryCta: "\u8054\u7cfb\u6211",
+      "一个聚焦嵌入式系统、机器视觉与边缘设备实验的个人作品集，用更克制的交互与更清晰的表达，呈现技术项目的温度与质感。",
+    actionsLabel: "主要操作",
+    primaryCta: "查看作品",
+    secondaryCta: "联系我",
   },
   role: {
-    note: "\u89d2\u8272\u4ecb\u7ecd",
-    title:
-      "\u4e13\u6ce8\u5d4c\u5165\u5f0f\u4e0e\u673a\u5668\u89c6\u89c9\uff0c\u628a\u60f3\u6cd5\u505a\u6210\u771f\u6b63\u80fd\u8fd0\u884c\u7684\u7cfb\u7edf\u3002",
+    note: "角色介绍",
+    title: "专注嵌入式与机器视觉，把想法做成真正能运行的系统。",
     body:
-      "LumiEmbed Space \u6c47\u96c6\u4e86\u6211\u5728\u5d4c\u5165\u5f0f\u63a7\u5236\u3001\u673a\u5668\u89c6\u89c9\u3001\u65e0\u7ebf\u901a\u4fe1\u4e0e\u5c0f\u578b\u4ea4\u4e92\u7cfb\u7edf\u4e0a\u7684\u5b9e\u8df5\u9879\u76ee\u3002\u76f8\u6bd4\u5806\u780c\u529f\u80fd\uff0c\u6211\u66f4\u5728\u610f\u8bbe\u5907\u8fdb\u5165\u771f\u5b9e\u573a\u666f\u4e4b\u540e\uff0c\u662f\u5426\u8db3\u591f\u7a33\u5b9a\u3001\u76f4\u63a5\u3001\u6e05\u6670\uff0c\u4e5f\u662f\u5426\u6709\u7ee7\u7eed\u6269\u5c55\u6210\u5b8c\u6574\u7cfb\u7edf\u7684\u53ef\u80fd\u3002",
-    skillLabel: "\u6280\u80fd\u6807\u7b7e",
+      "LumiEmbed Space 汇集了我在嵌入式控制、机器视觉、无线通信与小型交互系统上的实践项目。相比堆砌功能，我更在意设备进入真实场景之后，是否足够稳定、直接、清晰，也是否有继续扩展成完整系统的可能。",
+    skillLabel: "技能标签",
   },
   works: {
-    note: "\u4f5c\u54c1\u6848\u4f8b",
-    title: "\u4e00\u4e9b\u6b63\u5728\u6210\u5f62\u7684\u9879\u76ee\u4e0e\u5b9e\u9a8c",
+    note: "作品案例",
+    title: "一些正在成形的项目与实验",
+  },
+  play: {
+    note: "小游戏实验室",
+    title: "直接在主页里玩点轻量交互",
+    body:
+      "先放进三个适合移动端和桌面端快速体验的小游戏：2048、贪吃蛇和井字棋。它们既是娱乐入口，也是页面交互与设备表现的小型实验场。",
   },
   experience: {
-    note: "\u4e92\u52a8\u4f53\u9a8c",
-    title: "\u53ef\u7ee7\u7eed\u63a5\u5165\u3001\u6269\u5c55\u3001\u8054\u52a8\u7684\u5165\u53e3\u533a\u57df",
+    note: "互动体验",
+    title: "可继续接入、扩展、联动的入口区域",
   },
   contact: {
-    note: "\u8054\u7cfb\u65b9\u5f0f",
+    note: "联系方式",
     title:
-      "\u5982\u679c\u4f60\u4e5f\u5728\u505a\u8bbe\u5907\u3001\u89c6\u89c9\u3001\u63a7\u5236\u6216\u6709\u8da3\u7684\u5c0f\u7cfb\u7edf\uff0c\u53ef\u4ee5\u76f4\u63a5\u8054\u7cfb\u6211\u3002",
+      "如果你也在做设备、视觉、控制或有趣的小系统，可以直接联系我。",
   },
 };
 
 export const navItems = [
-  { label: "\u89d2\u8272\u4ecb\u7ecd", href: "#role" },
-  { label: "\u4f5c\u54c1\u6848\u4f8b", href: "#works" },
-  { label: "\u4e92\u52a8\u4f53\u9a8c", href: "#experience" },
-  { label: "\u8054\u7cfb\u65b9\u5f0f", href: "#contact" },
+  { label: "角色介绍", href: "#role" },
+  { label: "作品案例", href: "#works" },
+  { label: "小游戏", href: "#play" },
+  { label: "互动体验", href: "#experience" },
+  { label: "联系方式", href: "#contact" },
 ];
 
 export const skillSignals = [
-  "\u5d4c\u5165\u5f0f\u7cfb\u7edf",
-  "\u673a\u5668\u89c6\u89c9",
-  "\u8fb9\u7f18\u8bbe\u5907",
+  "嵌入式系统",
+  "机器视觉",
+  "边缘设备",
   "STM32 / ESP32 / Raspberry Pi",
-  "4G \u6444\u50cf\u5934\u5c0f\u8f66",
+  "4G 摄像头小车",
 ];
 
 export const projectCases = [
   {
-    title: "4G \u6444\u50cf\u5934\u5c0f\u8f66",
-    category: "\u8fb9\u7f18\u89c6\u89c9 / \u8fdc\u7a0b\u89c6\u9891",
+    title: "4G 摄像头小车",
+    category: "边缘视觉 / 远程视频",
     description:
-      "\u4e00\u4e2a\u56f4\u7ed5 TCP \u89c6\u9891\u4e0a\u4f20\u3001\u4e91\u7aef\u4e2d\u8f6c\u4e0e\u540e\u7eed\u8fdc\u7a0b\u63a7\u5236\u754c\u9762\u5c55\u5f00\u7684\u79fb\u52a8\u89c6\u89c9\u5e73\u53f0\u3002",
+      "一个围绕 TCP 视频上传、云端中转与后续远程控制界面展开的移动视觉平台。",
     mediaType: "video",
-    mediaLabel: "\u89c6\u9891",
+    mediaLabel: "视频",
   },
   {
-    title: "\u667a\u80fd\u98ce\u6247",
-    category: "\u5d4c\u5165\u5f0f\u63a7\u5236",
+    title: "智能风扇",
+    category: "嵌入式控制",
     description:
-      "\u57fa\u4e8e STM32 \u7684\u5d4c\u5165\u5f0f\u9879\u76ee\uff0c\u5305\u542b\u4f20\u611f\u3001\u663e\u793a\u3001\u84dd\u7259\u901a\u4fe1\u4e0e\u79fb\u52a8\u7aef\u8054\u52a8\u7b49\u80fd\u529b\u3002",
+      "基于 STM32 的嵌入式项目，包含传感、显示、蓝牙通信与移动端联动等能力。",
     mediaType: "poster",
-    mediaLabel: "\u6d77\u62a5",
+    mediaLabel: "海报",
   },
   {
-    title: "\u89c6\u89c9\u5b9e\u9a8c\u8bb0\u5f55",
-    category: "\u673a\u5668\u89c6\u89c9",
+    title: "视觉实验记录",
+    category: "机器视觉",
     description:
-      "\u6301\u7eed\u79ef\u7d2f\u76ee\u6807\u68c0\u6d4b\u3001\u56fe\u50cf\u5904\u7406\u4e0e\u8fb9\u7f18 AI \u539f\u578b\u6d4b\u8bd5\u7684\u5b9e\u9a8c\u8bb0\u5f55\u4e0e\u9636\u6bb5\u6027\u6210\u679c\u3002",
+      "持续积累目标检测、图像处理与边缘 AI 原型测试的实验记录与阶段性成果。",
     mediaType: "case",
-    mediaLabel: "\u6848\u4f8b",
+    mediaLabel: "案例",
   },
 ];
 
 export const experienceEntries = [
   {
-    title: "\u89c6\u89c9\u6f14\u793a\u533a",
+    title: "视觉演示区",
     description:
-      "\u540e\u7eed\u4f1a\u653e\u5165\u6d4f\u89c8\u5668\u53ef\u76f4\u63a5\u4f53\u9a8c\u7684\u68c0\u6d4b\u6f14\u793a\u4e0e\u89c6\u89c9\u5b9e\u9a8c\u9884\u89c8\u3002",
-    action: "\u5373\u5c06\u5f00\u653e",
+      "后续会放入浏览器可直接体验的检测演示与视觉实验预览。",
+    action: "即将开放",
     href: "#works",
   },
   {
-    title: "\u5c0f\u6e38\u620f\u5165\u53e3",
+    title: "小游戏入口",
     description:
-      "\u540e\u7eed\u4f1a\u52a0\u5165 2048\u3001\u8d2a\u5403\u86c7\u3001\u4e95\u5b57\u68cb\u7b49\u8f7b\u91cf\u4e92\u52a8\u5185\u5bb9\u3002",
-    action: "\u656c\u8bf7\u671f\u5f85",
-    href: "#experience",
+      "现在已经可以在站内直接玩 2048、贪吃蛇和井字棋，后续还能继续扩展。",
+    action: "进入试玩",
+    href: "#play",
   },
   {
-    title: "4G \u6444\u50cf\u5934\u5c0f\u8f66",
+    title: "4G 摄像头小车",
     description:
-      "\u5f53\u524d\u5148\u8df3\u8f6c\u5230\u73b0\u6709\u5b9e\u65f6\u89c6\u9891\u9875\uff0c\u540e\u7eed\u4f1a\u6574\u5408\u4e3a\u7ad9\u5185\u72ec\u7acb\u9875\u9762\u4e0e\u63a7\u5236\u53f0\u3002",
-    action: "\u6253\u5f00\u89c6\u9891",
+      "当前先跳转到现有实时视频页，后续会整合为站内独立页面与控制台。",
+    action: "打开视频",
     href: "http://175.178.171.79:8080",
   },
 ];
 
 export const heroShowcaseItems = [
   {
-    title: "4G \u5c0f\u8f66",
-    caption: "\u89c6\u9891\u4e2d\u8f6c\u4e0e\u8fdc\u7a0b\u5165\u53e3",
+    title: "4G 小车",
+    caption: "视频中转与远程入口",
     tag: "LIVE CAM",
     href: "http://175.178.171.79:8080",
     tone: "circuit",
   },
   {
-    title: "\u89c6\u89c9\u6f14\u793a",
-    caption: "\u8bc6\u522b\u6d41\u7a0b\u4e0e\u5b9e\u9a8c\u9884\u89c8",
+    title: "视觉演示",
+    caption: "识别流程与实验预览",
     tag: "EDGE AI",
     href: "#experience",
     tone: "sunrise",
   },
   {
-    title: "\u4f5c\u54c1\u6848\u4f8b",
-    caption: "\u4ece\u539f\u578b\u5230\u5b8c\u6210\u5ea6\u7684\u8bb0\u5f55",
+    title: "作品案例",
+    caption: "从原型到完成度的记录",
     tag: "PORTFOLIO",
     href: "#works",
     tone: "studio",
   },
   {
-    title: "\u63a7\u5236\u53f0",
-    caption: "\u540e\u7eed\u63a5\u5165\u8bbe\u5907\u72b6\u6001\u4e0e\u6307\u4ee4",
+    title: "控制台",
+    caption: "后续接入设备状态与指令",
     tag: "CONSOLE",
     href: "#experience",
     tone: "ember",
   },
   {
-    title: "\u667a\u80fd\u98ce\u6247",
-    caption: "STM32 \u7cfb\u7edf\u4e0e\u786c\u4ef6\u8054\u52a8",
+    title: "智能风扇",
+    caption: "STM32 系统与硬件联动",
     tag: "STM32",
     href: "#works",
     tone: "citrus",
   },
   {
-    title: "\u5c0f\u6e38\u620f",
-    caption: "\u8f7b\u4ea4\u4e92\u5165\u53e3\u4e0e\u9875\u9762\u5b9e\u9a8c",
+    title: "小游戏",
+    caption: "轻交互入口与页面实验",
     tag: "PLAY LAB",
-    href: "#experience",
+    href: "#play",
     tone: "room",
   },
 ];

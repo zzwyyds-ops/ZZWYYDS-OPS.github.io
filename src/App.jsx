@@ -7,6 +7,7 @@ import {
   projectCases,
   skillSignals,
 } from "./data/portfolio.js";
+import { PlayLabSection } from "./components/PlayLabSection.jsx";
 
 function HeroVideo() {
   return (
@@ -221,6 +222,7 @@ export default function App() {
       <Hero />
       <RoleSection />
       <WorksSection />
+      <PlayLabSection />
       <ExperienceSection />
       <ContactSection />
     </main>
