@@ -9,12 +9,19 @@ import {
 function ParticleField() {
   return (
     <div className="particle-field" aria-hidden="true">
-      <span className="particle particle-a" />
-      <span className="particle particle-b" />
-      <span className="particle particle-c" />
-      <span className="particle particle-d" />
-      <span className="particle particle-e" />
-      <span className="particle particle-f" />
+      {Array.from({ length: 24 }).map((_, index) => (
+        <span
+          className="particle"
+          key={index}
+          style={{
+            "--particle-index": index,
+            "--particle-delay": `${index * 0.28}s`,
+            "--particle-size": `${6 + (index % 5) * 3}px`,
+            "--particle-left": `${(index * 37) % 100}%`,
+            "--particle-top": `${(index * 19) % 100}%`,
+          }}
+        />
+      ))}
     </div>
   );
 }
@@ -22,14 +29,14 @@ function ParticleField() {
 function Header() {
   return (
     <header className="site-header">
-      <a className="brand-mark" href="#top" aria-label="LumiEmbed Space home">
-        <span className="brand-symbol">LE</span>
-        <span className="brand-name">LumiEmbed Space</span>
+      <a className="brand" href="#top" aria-label="LumiEmbed Space home">
+        <span className="brand-mark">LE</span>
+        <span>LumiEmbed Space</span>
       </a>
 
-      <nav className="site-nav" aria-label="Primary navigation">
+      <nav className="nav-links" aria-label="Primary navigation">
         {navItems.map((item) => (
-          <a key={item.href} href={item.href}>
+          <a href={item.href} key={item.href}>
             {item.label}
           </a>
         ))}
@@ -40,24 +47,24 @@ function Header() {
 
 function Hero() {
   return (
-    <section className="hero-section" id="top">
+    <section className="hero" id="top">
       <Header />
       <ParticleField />
       <div className="hero-orb" aria-hidden="true" />
 
       <div className="hero-content">
-        <p className="eyebrow">Embedded portfolio / Edge vision lab</p>
+        <p className="section-note">Embedded portfolio / Edge vision lab</p>
         <h1>LumiEmbed Space</h1>
-        <p className="identity-line">
+        <p className="hero-subtitle">
           An embedded systems and machine vision portfolio shaped around calm
           interaction, edge-device experiments, and luminous technical craft.
         </p>
 
         <div className="hero-actions" aria-label="Primary actions">
-          <a className="button button-primary" href="#works">
+          <a className="button primary" href="#works">
             View works
           </a>
-          <a className="button button-secondary" href={`mailto:${contact.email}`}>
+          <a className="button ghost" href={`mailto:${contact.email}`}>
             Contact
           </a>
         </div>
@@ -68,12 +75,13 @@ function Hero() {
 
 function RoleSection() {
   return (
-    <section className="section role-section" id="role">
-      <div className="section-kicker">Role</div>
-      <div className="section-grid">
+    <section className="section" id="role">
+      <div className="section-inner role-layout">
         <div>
+          <p className="section-note">Role</p>
           <h2>Embedded engineer building quiet, capable edge experiences.</h2>
         </div>
+
         <div className="role-copy">
           <p>
             LumiEmbed Space gathers practical projects across embedded control,
@@ -83,11 +91,9 @@ function RoleSection() {
             real world.
           </p>
 
-          <div className="signal-list" aria-label="Skill signals">
+          <div className="skill-signals" aria-label="Skill signals">
             {skillSignals.map((signal) => (
-              <span className="signal-pill" key={signal}>
-                {signal}
-              </span>
+              <span key={signal}>{signal}</span>
             ))}
           </div>
         </div>
@@ -99,24 +105,29 @@ function RoleSection() {
 function WorksSection() {
   return (
     <section className="section works-section" id="works">
-      <div className="section-heading">
-        <div className="section-kicker">Works</div>
-        <h2>Selected project cases</h2>
-      </div>
+      <div className="section-inner">
+        <div className="section-heading">
+          <p className="section-note">Works</p>
+          <h2>Selected project cases</h2>
+        </div>
 
-      <div className="work-grid">
-        {projectCases.map((project) => (
-          <article className="work-card" key={project.title}>
-            <div className={`media-frame media-${project.mediaType}`}>
-              <span>{project.mediaType}</span>
-            </div>
-            <div className="work-card-body">
-              <p className="work-category">{project.category}</p>
-              <h3>{project.title}</h3>
-              <p>{project.description}</p>
-            </div>
-          </article>
-        ))}
+        <div className="works-grid">
+          {projectCases.map((project, index) => (
+            <article
+              className={`work-card work-card-${index + 1}`}
+              key={project.title}
+            >
+              <div className={`media-shell media-${project.mediaType}`}>
+                <span>{project.mediaType}</span>
+              </div>
+              <div className="work-body">
+                <p>{project.category}</p>
+                <h3>{project.title}</h3>
+                <p>{project.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -124,33 +135,32 @@ function WorksSection() {
 
 function ExperienceSection() {
   return (
-    <section className="section experience-section" id="experience">
-      <div className="section-heading">
-        <div className="section-kicker">Experience</div>
-        <h2>Interactive spaces in progress</h2>
-      </div>
+    <section className="section" id="experience">
+      <div className="section-inner">
+        <div className="section-heading">
+          <p className="section-note">Experience</p>
+          <h2>Interactive spaces in progress</h2>
+        </div>
 
-      <div className="experience-list">
-        {experienceEntries.map((entry) => {
-          const isExternal = entry.href.startsWith("http");
+        <div className="experience-grid">
+          {experienceEntries.map((entry) => {
+            const isExternal = entry.href.startsWith("http");
 
-          return (
-            <article className="experience-card" key={entry.title}>
-              <div>
-                <h3>{entry.title}</h3>
-                <p>{entry.description}</p>
-              </div>
+            return (
               <a
-                className="text-link"
+                className="experience-card"
                 href={entry.href}
+                key={entry.title}
                 target={isExternal ? "_blank" : undefined}
                 rel={isExternal ? "noreferrer" : undefined}
               >
-                {entry.action}
+                <span>{entry.action}</span>
+                <h3>{entry.title}</h3>
+                <p>{entry.description}</p>
               </a>
-            </article>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </section>
   );
@@ -159,12 +169,12 @@ function ExperienceSection() {
 function ContactSection() {
   return (
     <section className="section contact-section" id="contact">
-      <div className="contact-panel">
+      <div className="section-inner contact-panel">
         <div>
-          <div className="section-kicker">Contact</div>
+          <p className="section-note">Contact</p>
           <h2>Let the next device, demo, or visual system take shape.</h2>
         </div>
-        <a className="contact-email" href={`mailto:${contact.email}`}>
+        <a className="email-link" href={`mailto:${contact.email}`}>
           {contact.email}
         </a>
       </div>
