@@ -7,21 +7,19 @@ import {
   skillSignals,
 } from "./data/portfolio.js";
 
-function ParticleField() {
+function HeroVideo() {
   return (
-    <div className="particle-field" aria-hidden="true">
-      {Array.from({ length: 24 }).map((_, index) => (
-        <span
-          className="particle"
-          key={index}
-          style={{
-            "--x": `${8 + ((index * 37) % 88)}%`,
-            "--y": `${12 + ((index * 29) % 74)}%`,
-            "--delay": `${-(index % 9) * 0.7}s`,
-            "--size": `${4 + (index % 5)}px`,
-          }}
-        />
-      ))}
+    <div className="hero-video-layer" aria-hidden="true">
+      <video
+        className="hero-video"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+      >
+        <source src="/media/hero-wallpaper.mp4" type="video/mp4" />
+      </video>
     </div>
   );
 }
@@ -48,7 +46,7 @@ function Hero() {
   return (
     <section className="hero-section" id="top">
       <Header />
-      <ParticleField />
+      <HeroVideo />
       <div className="hero-orb" aria-hidden="true" />
 
       <div className="hero-content">
