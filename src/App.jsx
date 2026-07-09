@@ -1,6 +1,7 @@
 import {
   contact,
   experienceEntries,
+  heroShowcaseItems,
   navItems,
   pageCopy,
   projectCases,
@@ -28,7 +29,8 @@ function Header() {
   return (
     <header className="site-header">
       <a className="brand" href="#top" aria-label={pageCopy.headerHomeLabel}>
-        LumiEmbed
+        <span className="brand-mark">L</span>
+        <span className="brand-text">LumiEmbed</span>
       </a>
 
       <nav className="nav-links" aria-label={pageCopy.headerNavLabel}>
@@ -38,33 +40,73 @@ function Header() {
           </a>
         ))}
       </nav>
+
+      <a className="header-cta" href={`mailto:${contact.email}`}>
+        {pageCopy.headerCta}
+      </a>
     </header>
+  );
+}
+
+function HeroShowcase() {
+  return (
+    <div className="hero-showcase" aria-label="精选入口">
+      {heroShowcaseItems.map((item) => {
+        const isExternal = item.href.startsWith("http");
+
+        return (
+          <a
+            className={`showcase-card tone-${item.tone}`}
+            href={item.href}
+            key={item.title}
+            target={isExternal ? "_blank" : undefined}
+            rel={isExternal ? "noreferrer" : undefined}
+          >
+            <span className="showcase-tag">{item.tag}</span>
+            <strong>{item.title}</strong>
+            <p>{item.caption}</p>
+          </a>
+        );
+      })}
+    </div>
   );
 }
 
 function Hero() {
   return (
-    <section className="hero-section" id="top">
-      <Header />
-      <HeroVideo />
-      <div className="hero-orb" aria-hidden="true" />
+    <section className="hero-shell" id="top">
+      <div className="hero-stage">
+        <Header />
+        <HeroVideo />
+        <div className="hero-orb" aria-hidden="true" />
 
-      <div className="hero-content">
-        <p className="section-note">{pageCopy.hero.note}</p>
-        <h1>
-          <span>LumiEmbed</span>
-          <span>Space</span>
-        </h1>
-        <p className="hero-subtitle">{pageCopy.hero.subtitle}</p>
+        <div className="hero-content">
+          <div className="hero-copy">
+            <h1 className="hero-title">
+              <span className="hero-line hero-line-primary">
+                LUMIEMBED
+                <span className="hero-spark hero-spark-large" aria-hidden="true">
+                  ✦
+                </span>
+                <span className="hero-spark hero-spark-small" aria-hidden="true">
+                  ✦
+                </span>
+              </span>
+              <span className="hero-line hero-line-secondary">
+                PORTFOLIO
+                <span className="hero-script">Space</span>
+              </span>
+            </h1>
+            <p className="hero-subtitle">{pageCopy.hero.subtitle}</p>
+          </div>
 
-        <div className="hero-actions" aria-label={pageCopy.hero.actionsLabel}>
-          <a className="button primary" href="#works">
-            {pageCopy.hero.primaryCta}
-          </a>
-          <a className="button ghost" href={`mailto:${contact.email}`}>
-            {pageCopy.hero.secondaryCta}
-          </a>
+          <div className="hero-meta">
+            <span>{pageCopy.hero.note}</span>
+            <span>{contact.email}</span>
+          </div>
         </div>
+
+        <HeroShowcase />
       </div>
     </section>
   );
@@ -175,7 +217,7 @@ function ContactSection() {
 
 export default function App() {
   return (
-    <main>
+    <main className="app-shell">
       <Hero />
       <RoleSection />
       <WorksSection />

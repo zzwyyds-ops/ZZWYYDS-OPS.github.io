@@ -1,6 +1,7 @@
 export const pageCopy = {
   headerHomeLabel: "LumiEmbed Space \u9996\u9875",
   headerNavLabel: "\u4e3b\u5bfc\u822a",
+  headerCta: "\u8054\u7cfb\u6211",
   hero: {
     note: "\u5d4c\u5165\u5f0f\u4f5c\u54c1\u96c6 / \u8fb9\u7f18\u89c6\u89c9\u5b9e\u9a8c\u5ba4",
     subtitle:
@@ -95,6 +96,51 @@ export const experienceEntries = [
       "\u5f53\u524d\u5148\u8df3\u8f6c\u5230\u73b0\u6709\u5b9e\u65f6\u89c6\u9891\u9875\uff0c\u540e\u7eed\u4f1a\u6574\u5408\u4e3a\u7ad9\u5185\u72ec\u7acb\u9875\u9762\u4e0e\u63a7\u5236\u53f0\u3002",
     action: "\u6253\u5f00\u89c6\u9891",
     href: "http://175.178.171.79:8080",
+  },
+];
+
+export const heroShowcaseItems = [
+  {
+    title: "4G \u5c0f\u8f66",
+    caption: "\u89c6\u9891\u4e2d\u8f6c\u4e0e\u8fdc\u7a0b\u5165\u53e3",
+    tag: "LIVE CAM",
+    href: "http://175.178.171.79:8080",
+    tone: "circuit",
+  },
+  {
+    title: "\u89c6\u89c9\u6f14\u793a",
+    caption: "\u8bc6\u522b\u6d41\u7a0b\u4e0e\u5b9e\u9a8c\u9884\u89c8",
+    tag: "EDGE AI",
+    href: "#experience",
+    tone: "sunrise",
+  },
+  {
+    title: "\u4f5c\u54c1\u6848\u4f8b",
+    caption: "\u4ece\u539f\u578b\u5230\u5b8c\u6210\u5ea6\u7684\u8bb0\u5f55",
+    tag: "PORTFOLIO",
+    href: "#works",
+    tone: "studio",
+  },
+  {
+    title: "\u63a7\u5236\u53f0",
+    caption: "\u540e\u7eed\u63a5\u5165\u8bbe\u5907\u72b6\u6001\u4e0e\u6307\u4ee4",
+    tag: "CONSOLE",
+    href: "#experience",
+    tone: "ember",
+  },
+  {
+    title: "\u667a\u80fd\u98ce\u6247",
+    caption: "STM32 \u7cfb\u7edf\u4e0e\u786c\u4ef6\u8054\u52a8",
+    tag: "STM32",
+    href: "#works",
+    tone: "citrus",
+  },
+  {
+    title: "\u5c0f\u6e38\u620f",
+    caption: "\u8f7b\u4ea4\u4e92\u5165\u53e3\u4e0e\u9875\u9762\u5b9e\u9a8c",
+    tag: "PLAY LAB",
+    href: "#experience",
+    tone: "room",
   },
 ];
 
