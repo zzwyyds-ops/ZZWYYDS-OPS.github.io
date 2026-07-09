@@ -454,19 +454,22 @@ h3 {
   text-transform: uppercase;
 }
 
-.media-device {
+.media-device,
+.media-video {
   background:
     radial-gradient(circle at 26% 22%, rgba(255, 255, 255, 0.9), transparent 7rem),
     linear-gradient(135deg, #f1a42c, #f5c15f 48%, #2f8f7f);
 }
 
-.media-vision {
+.media-vision,
+.media-poster {
   background:
     radial-gradient(circle at 72% 26%, rgba(255, 255, 255, 0.84), transparent 8rem),
     linear-gradient(135deg, #f8b094, #f3c24f 44%, #376f8c);
 }
 
-.media-interface {
+.media-interface,
+.media-case {
   background:
     radial-gradient(circle at 18% 72%, rgba(255, 255, 255, 0.78), transparent 8rem),
     linear-gradient(135deg, #ffe29d, #ee8f45 45%, #5aa998);
