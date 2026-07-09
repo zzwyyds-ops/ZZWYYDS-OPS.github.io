@@ -52,7 +52,10 @@ function Hero() {
 
       <div className="hero-content">
         <p className="section-note">Embedded portfolio / Edge vision lab</p>
-        <h1>LumiEmbed Space</h1>
+        <h1>
+          <span>LumiEmbed</span>
+          <span>Space</span>
+        </h1>
         <p className="hero-subtitle">
           An embedded systems and machine vision portfolio shaped around calm
           interaction, edge-device experiments, and luminous technical craft.
