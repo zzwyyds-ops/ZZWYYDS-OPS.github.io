@@ -137,7 +137,7 @@ function canMove2048(board) {
   return false;
 }
 
-function DirectionPad({ onMove, labels = {} }) {
+function DirectionPad({ labels = {}, onMove }) {
   return (
     <div className="direction-pad" aria-label="方向控制">
       <button type="button" onClick={() => onMove("up")}>
@@ -158,7 +158,7 @@ function DirectionPad({ onMove, labels = {} }) {
   );
 }
 
-function GameShell({ eyebrow, title, description, aside, children }) {
+function GameShell({ aside, children, description, eyebrow, title }) {
   return (
     <div className="game-shell">
       <div className="game-header">
@@ -207,10 +207,10 @@ function Game2048({ active }) {
 
     function onKeyDown(event) {
       const mapping = {
-        ArrowUp: "up",
         ArrowDown: "down",
         ArrowLeft: "left",
         ArrowRight: "right",
+        ArrowUp: "up",
       };
 
       if (mapping[event.key]) {
@@ -225,15 +225,15 @@ function Game2048({ active }) {
 
   return (
     <GameShell
-      eyebrow="数字实验"
-      title="2048"
-      description="合并相同数字，尽量冲到 2048。支持键盘方向键和屏幕按钮。"
       aside={
         <div className="game-stats">
           <span>分数 {state.score}</span>
           <span>{state.over ? "本局结束" : "继续合成"}</span>
         </div>
       }
+      description="合并相同数字，尽量冲到 2048。支持键盘方向键和屏幕按钮。"
+      eyebrow="数字实验"
+      title="2048"
     >
       <div className="game-layout game-layout-2048">
         <div className="board-2048" role="img" aria-label="2048 游戏盘">
@@ -264,16 +264,16 @@ function Game2048({ active }) {
 
 function createSnakeState() {
   return {
+    direction: "right",
+    food: [2, 7],
+    over: false,
+    running: false,
+    score: 0,
     snake: [
       [4, 4],
       [4, 3],
       [4, 2],
     ],
-    direction: "right",
-    food: [2, 7],
-    running: false,
-    score: 0,
-    over: false,
   };
 }
 
@@ -299,18 +299,13 @@ function nextFood(snake, size) {
 function GameSnake({ active }) {
   const size = 10;
   const [state, setState] = useState(createSnakeState);
-  const directionRef = useRef(state.direction);
-
-  useEffect(() => {
-    directionRef.current = state.direction;
-  }, [state.direction]);
 
   const setDirection = useCallback((nextDirection) => {
     const opposite = {
-      up: "down",
       down: "up",
       left: "right",
       right: "left",
+      up: "down",
     };
 
     setState((current) => {
@@ -329,10 +324,10 @@ function GameSnake({ active }) {
 
     function onKeyDown(event) {
       const mapping = {
-        ArrowUp: "up",
         ArrowDown: "down",
         ArrowLeft: "left",
         ArrowRight: "right",
+        ArrowUp: "up",
       };
 
       if (mapping[event.key]) {
@@ -342,7 +337,10 @@ function GameSnake({ active }) {
 
       if (event.code === "Space") {
         event.preventDefault();
-        setState((current) => ({ ...current, running: current.over ? false : !current.running }));
+        setState((current) => ({
+          ...current,
+          running: current.over ? false : !current.running,
+        }));
       }
     }
 
@@ -358,10 +356,10 @@ function GameSnake({ active }) {
     const timer = window.setInterval(() => {
       setState((current) => {
         const offsets = {
-          up: [-1, 0],
           down: [1, 0],
           left: [0, -1],
           right: [0, 1],
+          up: [-1, 0],
         };
         const [headRow, headCol] = current.snake[0];
         const [rowOffset, colOffset] = offsets[current.direction];
@@ -380,7 +378,7 @@ function GameSnake({ active }) {
         );
 
         if (hitWall || hitSelf) {
-          return { ...current, running: false, over: true };
+          return { ...current, over: true, running: false };
         }
 
         const ateFood =
@@ -393,9 +391,9 @@ function GameSnake({ active }) {
 
         return {
           ...current,
-          snake: nextSnake,
           food: ateFood ? nextFood(nextSnake, size) ?? current.food : current.food,
           score: ateFood ? current.score + 1 : current.score,
+          snake: nextSnake,
         };
       });
     }, 220);
@@ -408,15 +406,15 @@ function GameSnake({ active }) {
 
   return (
     <GameShell
-      eyebrow="轻交互"
-      title="贪吃蛇"
-      description="吃到光点就加分，撞墙或撞到自己就结束。支持空格暂停。"
       aside={
         <div className="game-stats">
           <span>得分 {state.score}</span>
           <span>{state.over ? "已结束" : state.running ? "进行中" : "待开始"}</span>
         </div>
       }
+      description="吃到光点就加分，撞墙或撞到自己就结束。支持空格暂停。"
+      eyebrow="轻交互"
+      title="贪吃蛇"
     >
       <div className="game-layout game-layout-snake">
         <div className="board-snake" role="img" aria-label="贪吃蛇棋盘">
@@ -479,7 +477,7 @@ function calculateWinner(board) {
     const [a, b, c] = line;
 
     if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-      return { player: board[a], line };
+      return { line, player: board[a] };
     }
   }
 
@@ -513,10 +511,14 @@ function GameTicTacToe() {
 
   return (
     <GameShell
+      aside={
+        <div className="game-stats">
+          <span>{status}</span>
+        </div>
+      }
+      description="一个适合随手玩的双人小游戏，也可以拿来测试手机触控和页面响应。"
       eyebrow="桌面对战"
       title="井字棋"
-      description="一个适合随手玩的双人小游戏，也可以拿来测试手机触控和页面响应。"
-      aside={<div className="game-stats"><span>{status}</span></div>}
     >
       <div className="game-layout game-layout-ttt">
         <div className="board-ttt" role="grid" aria-label="井字棋棋盘">
@@ -544,6 +546,7 @@ function GameTicTacToe() {
               再来一局
             </button>
           </div>
+
           <div className="game-hint-card">
             <strong>玩法</strong>
             <p>两人轮流落子，先连成一条线的一方获胜。</p>
@@ -554,42 +557,105 @@ function GameTicTacToe() {
   );
 }
 
-export function PlayLabSection() {
-  const [activeTab, setActiveTab] = useState("2048");
+export function GameHubDrawer({
+  activeGame,
+  onClose,
+  onSelectGame,
+  open,
+}) {
+  const panelRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) {
+      return undefined;
+    }
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function onKeyDown(event) {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [onClose, open]);
+
+  useEffect(() => {
+    if (open) {
+      panelRef.current?.focus();
+    }
+  }, [open]);
+
+  if (!open) {
+    return null;
+  }
 
   return (
-    <section className="section play-section" id="play">
-      <div className="section-inner play-lab-panel">
-        <div className="section-heading play-heading">
-          <div>
-            <p className="section-note">{pageCopy.play.note}</p>
-            <h2>{pageCopy.play.title}</h2>
+    <div
+      className="drawer-overlay"
+      onClick={onClose}
+      role="presentation"
+    >
+      <aside
+        aria-labelledby="games-hub-title"
+        aria-modal="true"
+        className="drawer-panel"
+        onClick={(event) => event.stopPropagation()}
+        ref={panelRef}
+        role="dialog"
+        tabIndex={-1}
+      >
+        <div className="drawer-topbar">
+          <div className="drawer-copy-block">
+            <p className="game-eyebrow">{pageCopy.play.note}</p>
+            <h2 className="drawer-title" id="games-hub-title">
+              {pageCopy.play.title}
+            </h2>
+            <p className="drawer-description">{pageCopy.play.body}</p>
           </div>
-          <p className="play-intro">{pageCopy.play.body}</p>
+
+          <button className="drawer-close" onClick={onClose} type="button">
+            关闭
+          </button>
         </div>
 
-        <div className="play-tab-bar" role="tablist" aria-label="小游戏切换">
-          {PLAY_TABS.map((tab) => (
-            <button
-              aria-selected={activeTab === tab.id}
-              className={`play-tab ${activeTab === tab.id ? "is-active" : ""}`}
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              role="tab"
-              type="button"
-            >
-              <strong>{tab.label}</strong>
-              <span>{tab.note}</span>
-            </button>
-          ))}
-        </div>
+        <div className="drawer-body">
+          <div className="drawer-rail">
+            <div className="drawer-rail-list" role="tablist" aria-label="小游戏切换">
+              {PLAY_TABS.map((tab) => (
+                <button
+                  aria-selected={activeGame === tab.id}
+                  className={`play-tab ${activeGame === tab.id ? "is-active" : ""}`}
+                  key={tab.id}
+                  onClick={() => onSelectGame(tab.id)}
+                  role="tab"
+                  type="button"
+                >
+                  <strong>{tab.label}</strong>
+                  <span>{tab.note}</span>
+                </button>
+              ))}
+            </div>
 
-        <div className="play-stage">
-          {activeTab === "2048" ? <Game2048 active /> : null}
-          {activeTab === "snake" ? <GameSnake active /> : null}
-          {activeTab === "tictactoe" ? <GameTicTacToe /> : null}
+            <div className="drawer-hint-card">
+              <strong>抽屉式入口</strong>
+              <p>后面工具中心、小车控制台、设备状态页也可以沿用这套交互结构。</p>
+            </div>
+          </div>
+
+          <div className="drawer-main">
+            {activeGame === "2048" ? <Game2048 active={open} /> : null}
+            {activeGame === "snake" ? <GameSnake active={open} /> : null}
+            {activeGame === "tictactoe" ? <GameTicTacToe /> : null}
+          </div>
         </div>
-      </div>
-    </section>
+      </aside>
+    </div>
   );
 }

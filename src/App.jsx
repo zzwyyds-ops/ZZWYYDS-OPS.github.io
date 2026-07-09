@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import {
   contact,
   experienceEntries,
@@ -7,14 +8,14 @@ import {
   projectCases,
   skillSignals,
 } from "./data/portfolio.js";
-import { PlayLabSection } from "./components/PlayLabSection.jsx";
+import { GameHubDrawer } from "./components/GameHubDrawer.jsx";
 
 function HeroVideo() {
   return (
     <div className="hero-video-layer" aria-hidden="true">
       <video
-        className="hero-video"
         autoPlay
+        className="hero-video"
         loop
         muted
         playsInline
@@ -26,7 +27,7 @@ function HeroVideo() {
   );
 }
 
-function Header() {
+function Header({ onOpenGames }) {
   return (
     <header className="site-header">
       <a className="brand" href="#top" aria-label={pageCopy.headerHomeLabel}>
@@ -35,11 +36,17 @@ function Header() {
       </a>
 
       <nav className="nav-links" aria-label={pageCopy.headerNavLabel}>
-        {navItems.map((item) => (
-          <a href={item.href} key={item.href}>
-            {item.label}
-          </a>
-        ))}
+        {navItems.map((item) =>
+          item.href === "#play" ? (
+            <button key={item.label} onClick={() => onOpenGames()} type="button">
+              {item.label}
+            </button>
+          ) : (
+            <a href={item.href} key={item.href}>
+              {item.label}
+            </a>
+          ),
+        )}
       </nav>
 
       <a className="header-cta" href={`mailto:${contact.email}`}>
@@ -49,47 +56,77 @@ function Header() {
   );
 }
 
-function HeroShowcase() {
+function InteractiveEntry({
+  children,
+  className,
+  href,
+  onOpenGames,
+  title,
+}) {
+  if (href === "#play") {
+    return (
+      <button
+        aria-label={title}
+        className={className}
+        onClick={() => onOpenGames()}
+        type="button"
+      >
+        {children}
+      </button>
+    );
+  }
+
+  const isExternal = href.startsWith("http");
+
+  return (
+    <a
+      className={className}
+      href={href}
+      rel={isExternal ? "noreferrer" : undefined}
+      target={isExternal ? "_blank" : undefined}
+    >
+      {children}
+    </a>
+  );
+}
+
+function HeroShowcase({ onOpenGames }) {
   return (
     <div className="hero-showcase" aria-label="精选入口">
-      {heroShowcaseItems.map((item) => {
-        const isExternal = item.href.startsWith("http");
-
-        return (
-          <a
-            className={`showcase-card tone-${item.tone}`}
-            href={item.href}
-            key={item.title}
-            target={isExternal ? "_blank" : undefined}
-            rel={isExternal ? "noreferrer" : undefined}
-          >
-            <span className="showcase-tag">{item.tag}</span>
-            <strong>{item.title}</strong>
-            <p>{item.caption}</p>
-          </a>
-        );
-      })}
+      {heroShowcaseItems.map((item) => (
+        <InteractiveEntry
+          className={`showcase-card tone-${item.tone}`}
+          href={item.href}
+          key={item.title}
+          onOpenGames={onOpenGames}
+          title={item.title}
+        >
+          <span className="showcase-tag">{item.tag}</span>
+          <strong>{item.title}</strong>
+          <p>{item.caption}</p>
+        </InteractiveEntry>
+      ))}
     </div>
   );
 }
 
-function Hero() {
+function Hero({ onOpenGames }) {
   return (
     <section className="hero-shell" id="top">
       <div className="hero-stage">
-        <Header />
+        <Header onOpenGames={onOpenGames} />
         <HeroVideo />
-        <div className="hero-orb" aria-hidden="true" />
+        <div aria-hidden="true" className="hero-orb" />
 
         <div className="hero-content">
           <div className="hero-copy">
             <h1 className="hero-title">
               <span className="hero-line hero-line-primary">
                 LUMIEMBED
-                <span className="hero-spark hero-spark-large" aria-hidden="true">
+                <span aria-hidden="true" className="hero-spark hero-spark-large">
                   ✦
                 </span>
-                <span className="hero-spark hero-spark-small" aria-hidden="true">
+                <span aria-hidden="true" className="hero-spark hero-spark-small">
                   ✦
                 </span>
               </span>
@@ -107,7 +144,7 @@ function Hero() {
           </div>
         </div>
 
-        <HeroShowcase />
+        <HeroShowcase onOpenGames={onOpenGames} />
       </div>
     </section>
   );
@@ -167,7 +204,7 @@ function WorksSection() {
   );
 }
 
-function ExperienceSection() {
+function ExperienceSection({ onOpenGames }) {
   return (
     <section className="section" id="experience">
       <div className="section-inner">
@@ -177,23 +214,19 @@ function ExperienceSection() {
         </div>
 
         <div className="experience-grid">
-          {experienceEntries.map((entry) => {
-            const isExternal = entry.href.startsWith("http");
-
-            return (
-              <a
-                className="experience-card"
-                href={entry.href}
-                key={entry.title}
-                target={isExternal ? "_blank" : undefined}
-                rel={isExternal ? "noreferrer" : undefined}
-              >
-                <span>{entry.action}</span>
-                <h3>{entry.title}</h3>
-                <p>{entry.description}</p>
-              </a>
-            );
-          })}
+          {experienceEntries.map((entry) => (
+            <InteractiveEntry
+              className="experience-card"
+              href={entry.href}
+              key={entry.title}
+              onOpenGames={onOpenGames}
+              title={entry.title}
+            >
+              <span>{entry.action}</span>
+              <h3>{entry.title}</h3>
+              <p>{entry.description}</p>
+            </InteractiveEntry>
+          ))}
         </div>
       </div>
     </section>
@@ -217,14 +250,34 @@ function ContactSection() {
 }
 
 export default function App() {
+  const [activeGame, setActiveGame] = useState("2048");
+  const [gamesOpen, setGamesOpen] = useState(false);
+
+  const openGames = useCallback((gameId = "2048") => {
+    setActiveGame(gameId);
+    setGamesOpen(true);
+  }, []);
+
+  const closeGames = useCallback(() => {
+    setGamesOpen(false);
+  }, []);
+
   return (
-    <main className="app-shell">
-      <Hero />
-      <RoleSection />
-      <WorksSection />
-      <PlayLabSection />
-      <ExperienceSection />
-      <ContactSection />
-    </main>
+    <>
+      <main className="app-shell">
+        <Hero onOpenGames={openGames} />
+        <RoleSection />
+        <WorksSection />
+        <ExperienceSection onOpenGames={openGames} />
+        <ContactSection />
+      </main>
+
+      <GameHubDrawer
+        activeGame={activeGame}
+        onClose={closeGames}
+        onSelectGame={setActiveGame}
+        open={gamesOpen}
+      />
+    </>
   );
 }
