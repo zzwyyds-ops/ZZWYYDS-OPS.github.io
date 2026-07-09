@@ -14,11 +14,10 @@ function ParticleField() {
           className="particle"
           key={index}
           style={{
-            "--particle-index": index,
-            "--particle-delay": `${index * 0.28}s`,
-            "--particle-size": `${6 + (index % 5) * 3}px`,
-            "--particle-left": `${(index * 37) % 100}%`,
-            "--particle-top": `${(index * 19) % 100}%`,
+            "--x": `${8 + ((index * 37) % 88)}%`,
+            "--y": `${12 + ((index * 29) % 74)}%`,
+            "--delay": `${-(index % 9) * 0.7}s`,
+            "--size": `${4 + (index % 5)}px`,
           }}
         />
       ))}
@@ -30,8 +29,7 @@ function Header() {
   return (
     <header className="site-header">
       <a className="brand" href="#top" aria-label="LumiEmbed Space home">
-        <span className="brand-mark">LE</span>
-        <span>LumiEmbed Space</span>
+        LumiEmbed
       </a>
 
       <nav className="nav-links" aria-label="Primary navigation">
@@ -47,7 +45,7 @@ function Header() {
 
 function Hero() {
   return (
-    <section className="hero" id="top">
+    <section className="hero-section" id="top">
       <Header />
       <ParticleField />
       <div className="hero-orb" aria-hidden="true" />
@@ -76,7 +74,7 @@ function Hero() {
 function RoleSection() {
   return (
     <section className="section" id="role">
-      <div className="section-inner role-layout">
+      <div className="section-inner role-grid">
         <div>
           <p className="section-note">Role</p>
           <h2>Embedded engineer building quiet, capable edge experiences.</h2>
@@ -91,7 +89,7 @@ function RoleSection() {
             real world.
           </p>
 
-          <div className="skill-signals" aria-label="Skill signals">
+          <div className="skill-cloud" aria-label="Skill signals">
             {skillSignals.map((signal) => (
               <span key={signal}>{signal}</span>
             ))}
