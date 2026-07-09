@@ -2,6 +2,7 @@ import {
   contact,
   experienceEntries,
   navItems,
+  pageCopy,
   projectCases,
   skillSignals,
 } from "./data/portfolio.js";
@@ -28,11 +29,11 @@ function ParticleField() {
 function Header() {
   return (
     <header className="site-header">
-      <a className="brand" href="#top" aria-label="LumiEmbed Space home">
+      <a className="brand" href="#top" aria-label={pageCopy.headerHomeLabel}>
         LumiEmbed
       </a>
 
-      <nav className="nav-links" aria-label="Primary navigation">
+      <nav className="nav-links" aria-label={pageCopy.headerNavLabel}>
         {navItems.map((item) => (
           <a href={item.href} key={item.href}>
             {item.label}
@@ -51,22 +52,19 @@ function Hero() {
       <div className="hero-orb" aria-hidden="true" />
 
       <div className="hero-content">
-        <p className="section-note">Embedded portfolio / Edge vision lab</p>
+        <p className="section-note">{pageCopy.hero.note}</p>
         <h1>
           <span>LumiEmbed</span>
           <span>Space</span>
         </h1>
-        <p className="hero-subtitle">
-          An embedded systems and machine vision portfolio shaped around calm
-          interaction, edge-device experiments, and luminous technical craft.
-        </p>
+        <p className="hero-subtitle">{pageCopy.hero.subtitle}</p>
 
-        <div className="hero-actions" aria-label="Primary actions">
+        <div className="hero-actions" aria-label={pageCopy.hero.actionsLabel}>
           <a className="button primary" href="#works">
-            View works
+            {pageCopy.hero.primaryCta}
           </a>
           <a className="button ghost" href={`mailto:${contact.email}`}>
-            Contact
+            {pageCopy.hero.secondaryCta}
           </a>
         </div>
       </div>
@@ -79,20 +77,14 @@ function RoleSection() {
     <section className="section" id="role">
       <div className="section-inner role-grid">
         <div>
-          <p className="section-note">Role</p>
-          <h2>Embedded engineer building quiet, capable edge experiences.</h2>
+          <p className="section-note">{pageCopy.role.note}</p>
+          <h2>{pageCopy.role.title}</h2>
         </div>
 
         <div className="role-copy">
-          <p>
-            LumiEmbed Space gathers practical projects across embedded control,
-            machine vision, wireless communication, and small interactive
-            systems. The work leans toward clear interfaces, measured
-            experimentation, and devices that feel precise when they meet the
-            real world.
-          </p>
+          <p>{pageCopy.role.body}</p>
 
-          <div className="skill-cloud" aria-label="Skill signals">
+          <div className="skill-cloud" aria-label={pageCopy.role.skillLabel}>
             {skillSignals.map((signal) => (
               <span key={signal}>{signal}</span>
             ))}
@@ -108,8 +100,8 @@ function WorksSection() {
     <section className="section works-section" id="works">
       <div className="section-inner">
         <div className="section-heading">
-          <p className="section-note">Works</p>
-          <h2>Selected project cases</h2>
+          <p className="section-note">{pageCopy.works.note}</p>
+          <h2>{pageCopy.works.title}</h2>
         </div>
 
         <div className="works-grid">
@@ -119,7 +111,7 @@ function WorksSection() {
               key={project.title}
             >
               <div className={`media-shell media-${project.mediaType}`}>
-                <span>{project.mediaType}</span>
+                <span>{project.mediaLabel}</span>
               </div>
               <div className="work-body">
                 <p>{project.category}</p>
@@ -139,8 +131,8 @@ function ExperienceSection() {
     <section className="section" id="experience">
       <div className="section-inner">
         <div className="section-heading">
-          <p className="section-note">Experience</p>
-          <h2>Interactive spaces in progress</h2>
+          <p className="section-note">{pageCopy.experience.note}</p>
+          <h2>{pageCopy.experience.title}</h2>
         </div>
 
         <div className="experience-grid">
@@ -172,8 +164,8 @@ function ContactSection() {
     <section className="section contact-section" id="contact">
       <div className="section-inner contact-panel">
         <div>
-          <p className="section-note">Contact</p>
-          <h2>Let the next device, demo, or visual system take shape.</h2>
+          <p className="section-note">{pageCopy.contact.note}</p>
+          <h2>{pageCopy.contact.title}</h2>
         </div>
         <a className="email-link" href={`mailto:${contact.email}`}>
           {contact.email}
