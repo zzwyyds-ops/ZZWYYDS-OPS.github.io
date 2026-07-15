@@ -122,6 +122,20 @@ export const projectCases = [
     mediaLabel: "控制",
   },
   {
+    title: "STM32 宠物喂食机器人",
+    category: "STM32 / 智能设备",
+    description: "项目框架已建立，后续补充定时投喂、舵机结构、传感检测与设备外观展示。",
+    mediaType: "device",
+    mediaLabel: "投喂",
+  },
+  {
+    title: "4G 远程小车",
+    category: "4G 通信 / 远程控制",
+    description: "项目框架已建立，后续补充 4G 通信链路、远程控制协议、运动底盘与调试记录。",
+    mediaType: "video",
+    mediaLabel: "远程",
+  },
+  {
     title: "避障蓝牙巡线小车",
     category: "传感器 / 蓝牙控制",
     description: "项目框架已建立，后续补充巡线逻辑、避障传感、蓝牙控制与运行视频。",
