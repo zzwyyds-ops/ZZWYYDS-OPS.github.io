@@ -3,8 +3,10 @@ import {
   contact,
   experienceEntries,
   heroShowcaseItems,
+  manifestoQuotes,
   navItems,
   pageCopy,
+  profileFacts,
   projectCases,
   skillSignals,
 } from "./data/portfolio.js";
@@ -173,6 +175,31 @@ function RoleSection() {
         <div className="role-copy">
           <p>{pageCopy.role.body}</p>
           <p className="role-hobby">{pageCopy.role.hobby}</p>
+
+          <div className="role-insight-grid">
+            <section className="role-panel" aria-label={pageCopy.role.profileLabel}>
+              <p className="role-panel-label">{pageCopy.role.profileLabel}</p>
+              <div className="profile-facts">
+                {profileFacts.map((fact) => (
+                  <div className="profile-fact" key={fact.label}>
+                    <span>{fact.label}</span>
+                    <strong>{fact.value}</strong>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="role-panel" aria-label={pageCopy.role.manifestoLabel}>
+              <p className="role-panel-label">{pageCopy.role.manifestoLabel}</p>
+              <div className="manifesto-list">
+                {manifestoQuotes.map((quote) => (
+                  <p className="manifesto-quote" key={quote}>
+                    {quote}
+                  </p>
+                ))}
+              </div>
+            </section>
+          </div>
 
           <div className="skill-cloud" aria-label={pageCopy.role.skillLabel}>
             {skillSignals.map((signal) => (

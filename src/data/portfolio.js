@@ -20,6 +20,8 @@ export const pageCopy = {
       "EmbedVision Lab 汇集了我在嵌入式控制、机器视觉、无线通信与小型交互系统上的实践项目。相比堆砌功能，我更在意设备进入真实场景之后，是否足够稳定、直接、清晰，也是否有继续扩展成完整系统的可能。",
     hobby:
       "我的兴趣也一直围绕真实硬件展开：喜欢制作电子产品、动手 DIY、研究穿越机与各类可运动设备，把好奇心变成能上电、能运行、能被人使用的小系统。",
+    profileLabel: "个人信息",
+    manifestoLabel: "自我提醒",
     skillLabel: "技能标签",
   },
   works: {
@@ -59,6 +61,18 @@ export const skillSignals = [
   "穿越机",
   "STM32 / ESP32 / Raspberry Pi",
   "4G 摄像头小车",
+];
+
+export const profileFacts = [
+  { label: "学历", value: "本科" },
+  { label: "专业", value: "电子科学与技术" },
+  { label: "学校", value: "四川文理学院" },
+];
+
+export const manifestoQuotes = [
+  "AI 不会取代你，但会用 AI 的人会。",
+  "AI 时代，稀缺的不再是知识，而是判断力。",
+  "AI 的深度像一片静态海洋；你提问的锚点，决定你能打捞出多少沉默的宝藏。",
 ];
 
 export const projectCases = [

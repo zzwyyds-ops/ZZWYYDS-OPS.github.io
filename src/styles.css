@@ -156,9 +156,9 @@ main {
 .hero-video-title {
   position: absolute;
   left: clamp(24px, 4vw, 68px);
-  bottom: clamp(24px, 4vw, 62px);
+  bottom: clamp(40px, 5.4vw, 84px);
   z-index: 2;
-  width: min(72%, 1100px);
+  width: min(68%, 1040px);
   pointer-events: none;
 }
 
@@ -306,8 +306,9 @@ main {
   position: relative;
   margin: 0;
   display: grid;
+  gap: 0.06em;
   max-width: 100%;
-  line-height: 0.9;
+  line-height: 0.84;
   letter-spacing: 0;
   text-wrap: balance;
 }
@@ -321,7 +322,7 @@ main {
 
 .hero-line-primary {
   color: var(--accent);
-  font-size: clamp(3.4rem, 7.2vw, 7.8rem);
+  font-size: clamp(3.1rem, 6.5vw, 7rem);
   font-weight: 900;
   text-shadow: 0 0 24px rgba(0, 0, 0, 0.56), 0 0 34px rgba(99, 245, 255, 0.24);
 }
@@ -332,7 +333,7 @@ main {
   gap: 0.12em;
   flex-wrap: wrap;
   color: #eef6ff;
-  font-size: clamp(2.5rem, 5.1vw, 5.3rem);
+  font-size: clamp(2.15rem, 4.5vw, 4.6rem);
   font-weight: 800;
   text-shadow: 0 0 22px rgba(0, 0, 0, 0.62), 0 0 20px rgba(99, 245, 255, 0.08);
 }
@@ -675,6 +676,92 @@ h3 {
     linear-gradient(135deg, rgba(99, 245, 255, 0.08), rgba(255, 95, 210, 0.06)),
     rgba(8, 14, 28, 0.58);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.role-insight-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: minmax(240px, 0.78fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.role-panel {
+  padding: 18px 20px;
+  border: 1px solid rgba(99, 245, 255, 0.14);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(10, 16, 31, 0.9), rgba(8, 12, 23, 0.92)),
+    rgba(8, 12, 23, 0.9);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.role-panel-label {
+  margin: 0 0 14px !important;
+  color: rgba(99, 245, 255, 0.92);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: var(--mono);
+}
+
+.profile-facts {
+  display: grid;
+  gap: 12px;
+}
+
+.profile-fact {
+  padding-bottom: 12px;
+  display: grid;
+  gap: 6px;
+  border-bottom: 1px solid rgba(99, 245, 255, 0.1);
+}
+
+.profile-fact:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.profile-fact span {
+  color: rgba(174, 214, 246, 0.76);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--mono);
+}
+
+.profile-fact strong {
+  color: #f2faff;
+  font-family: "Archivo", "Manrope", sans-serif;
+  font-size: 1.12rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.manifesto-list {
+  display: grid;
+  gap: 12px;
+}
+
+.manifesto-quote {
+  margin: 0 !important;
+  padding-left: 16px;
+  position: relative;
+  color: rgba(228, 240, 255, 0.9);
+  line-height: 1.7;
+}
+
+.manifesto-quote::before {
+  position: absolute;
+  top: 0.2em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 12px rgba(99, 245, 255, 0.24);
+  content: "";
 }
 
 .skill-cloud {
@@ -1428,6 +1515,10 @@ h3 {
     grid-template-columns: 1fr;
   }
 
+  .role-insight-grid {
+    grid-template-columns: 1fr;
+  }
+
   .section-heading {
     align-items: flex-start;
     flex-direction: column;
@@ -1486,7 +1577,7 @@ h3 {
   .hero-video-title {
     left: 20px;
     right: 20px;
-    bottom: 18px;
+    bottom: 30px;
     width: auto;
   }
 
@@ -1505,12 +1596,12 @@ h3 {
   }
 
   .hero-line-primary {
-    font-size: clamp(1.7rem, 7.6vw, 2.18rem);
+    font-size: clamp(1.56rem, 6.8vw, 2rem);
   }
 
   .hero-line-secondary {
     gap: 0.06em;
-    font-size: clamp(1.5rem, 7vw, 2.12rem);
+    font-size: clamp(1.28rem, 5.8vw, 1.78rem);
   }
 
   .hero-subtitle {
@@ -1522,7 +1613,7 @@ h3 {
 
   .hero-script {
     margin-bottom: 0.03em;
-    font-size: 0.42em;
+    font-size: 0.38em;
   }
 
   .site-header {
