@@ -31,7 +31,7 @@ function Header({ onOpenGames }) {
   return (
     <header className="site-header">
       <a className="brand" href="#top" aria-label={pageCopy.headerHomeLabel}>
-        <span className="brand-mark">L</span>
+        <span className="brand-mark">E</span>
         <span className="brand-text">EmbedVision Lab</span>
       </a>
 
