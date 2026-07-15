@@ -1,5 +1,5 @@
 export const pageCopy = {
-  headerHomeLabel: "LumiEmbed Space 首页",
+  headerHomeLabel: "EmbedVision Lab 首页",
   headerNavLabel: "主导航",
   headerCta: "联系我",
   hero: {
@@ -14,7 +14,7 @@ export const pageCopy = {
     note: "角色介绍",
     title: "专注嵌入式与机器视觉，把想法做成真正能运行的系统。",
     body:
-      "LumiEmbed Space 汇集了我在嵌入式控制、机器视觉、无线通信与小型交互系统上的实践项目。相比堆砌功能，我更在意设备进入真实场景之后，是否足够稳定、直接、清晰，也是否有继续扩展成完整系统的可能。",
+      "EmbedVision Lab 汇集了我在嵌入式控制、机器视觉、无线通信与小型交互系统上的实践项目。相比堆砌功能，我更在意设备进入真实场景之后，是否足够稳定、直接、清晰，也是否有继续扩展成完整系统的可能。",
     skillLabel: "技能标签",
   },
   works: {

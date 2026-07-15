@@ -32,7 +32,7 @@ function Header({ onOpenGames }) {
     <header className="site-header">
       <a className="brand" href="#top" aria-label={pageCopy.headerHomeLabel}>
         <span className="brand-mark">L</span>
-        <span className="brand-text">LumiEmbed</span>
+        <span className="brand-text">EmbedVision Lab</span>
       </a>
 
       <nav className="nav-links" aria-label={pageCopy.headerNavLabel}>
@@ -122,7 +122,7 @@ function Hero({ onOpenGames }) {
           <div className="hero-copy">
             <h1 className="hero-title">
               <span className="hero-line hero-line-primary">
-                LUMIEMBED
+                EMBEDVISION
                 <span aria-hidden="true" className="hero-spark hero-spark-large">
                   ✦
                 </span>
@@ -131,7 +131,7 @@ function Hero({ onOpenGames }) {
                 </span>
               </span>
               <span className="hero-line hero-line-secondary">
-                PORTFOLIO
+                LAB
                 <span className="hero-script">Space</span>
               </span>
             </h1>
