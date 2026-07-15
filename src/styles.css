@@ -136,7 +136,9 @@ main {
   position: absolute;
   inset: 0;
   content: "";
-  background: linear-gradient(180deg, rgba(5, 8, 18, 0.04), rgba(5, 8, 18, 0.08));
+  background:
+    linear-gradient(180deg, rgba(5, 8, 18, 0.03) 0%, rgba(5, 8, 18, 0.02) 52%, rgba(5, 8, 18, 0.42) 100%),
+    linear-gradient(90deg, rgba(5, 8, 18, 0.44) 0%, rgba(5, 8, 18, 0.16) 34%, transparent 66%);
 }
 
 .hero-video {
@@ -149,6 +151,15 @@ main {
   object-position: center center;
   filter: saturate(1.04) contrast(1.02) brightness(1);
   transform: none;
+}
+
+.hero-video-title {
+  position: absolute;
+  left: clamp(24px, 4vw, 68px);
+  bottom: clamp(24px, 4vw, 62px);
+  z-index: 2;
+  width: min(72%, 1100px);
+  pointer-events: none;
 }
 
 .hero-orb {
@@ -275,7 +286,7 @@ main {
   z-index: 3;
   width: 100%;
   margin: 0 auto;
-  padding: 30px clamp(28px, 4vw, 58px) 24px;
+  padding: 26px clamp(28px, 4vw, 58px) 22px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 0.5fr);
   gap: clamp(24px, 4vw, 64px);
@@ -287,7 +298,7 @@ main {
 }
 
 .hero-copy {
-  max-width: 980px;
+  max-width: 820px;
   min-width: 0;
 }
 
@@ -305,14 +316,14 @@ main {
   display: block;
   font-family: "Archivo", "Manrope", sans-serif;
   max-width: 100%;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
 }
 
 .hero-line-primary {
   color: var(--accent);
-  font-size: clamp(3rem, 6.1vw, 6.7rem);
+  font-size: clamp(3.4rem, 7.2vw, 7.8rem);
   font-weight: 900;
-  text-shadow: 0 0 26px rgba(99, 245, 255, 0.24), 0 0 46px rgba(99, 245, 255, 0.08);
+  text-shadow: 0 0 24px rgba(0, 0, 0, 0.56), 0 0 34px rgba(99, 245, 255, 0.24);
 }
 
 .hero-line-secondary {
@@ -321,9 +332,9 @@ main {
   gap: 0.12em;
   flex-wrap: wrap;
   color: #eef6ff;
-  font-size: clamp(2.3rem, 4.7vw, 4.9rem);
+  font-size: clamp(2.5rem, 5.1vw, 5.3rem);
   font-weight: 800;
-  text-shadow: 0 0 20px rgba(99, 245, 255, 0.08);
+  text-shadow: 0 0 22px rgba(0, 0, 0, 0.62), 0 0 20px rgba(99, 245, 255, 0.08);
 }
 
 .hero-script {
@@ -360,7 +371,7 @@ main {
 
 .hero-subtitle {
   max-width: 760px;
-  margin: 20px 0 0;
+  margin: 0;
   color: rgba(223, 236, 250, 0.86);
   font-size: clamp(1.1rem, 1.85vw, 1.45rem);
   line-height: 1.6;
@@ -1470,6 +1481,13 @@ h3 {
 
   .hero-video {
     object-position: center center;
+  }
+
+  .hero-video-title {
+    left: 20px;
+    right: 20px;
+    bottom: 18px;
+    width: auto;
   }
 
   .hero-content {

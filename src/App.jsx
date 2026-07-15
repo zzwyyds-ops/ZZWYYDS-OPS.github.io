@@ -10,10 +10,31 @@ import {
 } from "./data/portfolio.js";
 import { GameHubDrawer } from "./components/GameHubDrawer.jsx";
 
+function HeroTitle() {
+  return (
+    <h1 className="hero-title">
+      <span className="hero-line hero-line-primary">
+        EMBEDVISION
+        <span aria-hidden="true" className="hero-spark hero-spark-large">
+          ✦
+        </span>
+        <span aria-hidden="true" className="hero-spark hero-spark-small">
+          ✦
+        </span>
+      </span>
+      <span className="hero-line hero-line-secondary">
+        LAB
+        <span className="hero-script">Space</span>
+      </span>
+    </h1>
+  );
+}
+
 function HeroVideo() {
   return (
-    <div className="hero-video-layer" aria-hidden="true">
+    <div className="hero-video-layer">
       <video
+        aria-hidden="true"
         autoPlay
         className="hero-video"
         loop
@@ -23,6 +44,9 @@ function HeroVideo() {
       >
         <source src="/media/hero-cyberpunk-wallpaper.mp4" type="video/mp4" />
       </video>
+      <div className="hero-video-title">
+        <HeroTitle />
+      </div>
     </div>
   );
 }
@@ -120,21 +144,6 @@ function Hero({ onOpenGames }) {
 
         <div className="hero-content">
           <div className="hero-copy">
-            <h1 className="hero-title">
-              <span className="hero-line hero-line-primary">
-                EMBEDVISION
-                <span aria-hidden="true" className="hero-spark hero-spark-large">
-                  ✦
-                </span>
-                <span aria-hidden="true" className="hero-spark hero-spark-small">
-                  ✦
-                </span>
-              </span>
-              <span className="hero-line hero-line-secondary">
-                LAB
-                <span className="hero-script">Space</span>
-              </span>
-            </h1>
             <p className="hero-subtitle">{pageCopy.hero.subtitle}</p>
           </div>
 
