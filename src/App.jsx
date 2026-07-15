@@ -140,6 +140,7 @@ function Hero({ onOpenGames }) {
 
           <div className="hero-meta">
             <span>{pageCopy.hero.note}</span>
+            <span>{pageCopy.hero.author}</span>
             <span>{contact.email}</span>
           </div>
         </div>

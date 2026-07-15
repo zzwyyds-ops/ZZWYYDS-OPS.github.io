@@ -4,6 +4,7 @@ export const pageCopy = {
   headerCta: "联系我",
   hero: {
     note: "嵌入式作品集 / 边缘视觉实验室",
+    author: "作者：张志伟",
     subtitle:
       "一个聚焦嵌入式系统、机器视觉与边缘设备实验的个人作品集，用更克制的交互与更清晰的表达，呈现技术项目的温度与质感。",
     actionsLabel: "主要操作",
