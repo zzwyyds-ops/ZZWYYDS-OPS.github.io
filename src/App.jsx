@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import {
   contact,
   experienceEntries,
+  featuredProjectCases,
   heroShowcaseItems,
   manifestoQuotes,
   navItems,
@@ -136,6 +137,23 @@ function HeroShowcase({ onOpenGames }) {
   );
 }
 
+function ProjectCard({ project, variant = "default", index }) {
+  return (
+    <article
+      className={`work-card work-card-${index + 1} project-card-${variant}`}
+    >
+      <div className={`media-shell media-${project.mediaType}`}>
+        <span>{project.mediaLabel}</span>
+      </div>
+      <div className="work-body">
+        <p>{project.category}</p>
+        <h3>{project.title}</h3>
+        <p>{project.description}</p>
+      </div>
+    </article>
+  );
+}
+
 function Hero({ onOpenGames }) {
   return (
     <section className="hero-shell" id="top">
@@ -212,6 +230,33 @@ function RoleSection() {
   );
 }
 
+function FeaturedProjectsSection() {
+  return (
+    <section className="section featured-section" id="featured">
+      <div className="section-inner">
+        <div className="section-heading featured-heading">
+          <div>
+            <p className="section-note">{pageCopy.featured.note}</p>
+            <h2>{pageCopy.featured.title}</h2>
+          </div>
+          <p className="featured-copy">{pageCopy.featured.body}</p>
+        </div>
+
+        <div className="featured-grid">
+          {featuredProjectCases.map((project, index) => (
+            <ProjectCard
+              index={index}
+              key={project.title}
+              project={project}
+              variant="featured"
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function WorksSection() {
   return (
     <section className="section works-section" id="works">
@@ -223,19 +268,7 @@ function WorksSection() {
 
         <div className="works-grid">
           {projectCases.map((project, index) => (
-            <article
-              className={`work-card work-card-${index + 1}`}
-              key={project.title}
-            >
-              <div className={`media-shell media-${project.mediaType}`}>
-                <span>{project.mediaLabel}</span>
-              </div>
-              <div className="work-body">
-                <p>{project.category}</p>
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-              </div>
-            </article>
+            <ProjectCard index={index} key={project.title} project={project} />
           ))}
         </div>
       </div>
@@ -305,6 +338,7 @@ export default function App() {
     <>
       <main className="app-shell">
         <Hero onOpenGames={openGames} />
+        <FeaturedProjectsSection />
         <RoleSection />
         <WorksSection />
         <ExperienceSection onOpenGames={openGames} />

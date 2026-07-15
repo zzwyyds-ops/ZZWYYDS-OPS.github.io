@@ -26,7 +26,13 @@ export const pageCopy = {
   },
   works: {
     note: "作品案例",
-    title: "一些正在成形的项目与实验",
+    title: "嵌入式项目库与后续视觉实验",
+  },
+  featured: {
+    note: "重点项目",
+    title: "先把最能代表方向的项目放到首页",
+    body:
+      "这一组先作为首页重点入口，后续会继续补充项目简介、结构图、实物照片和演示视频。",
   },
   play: {
     note: "小游戏实验室",
@@ -77,30 +83,68 @@ export const manifestoQuotes = [
 
 export const projectCases = [
   {
-    title: "4G 摄像头小车",
-    category: "边缘视觉 / 远程视频",
-    description:
-      "一个围绕 TCP 视频上传、云端中转与后续远程控制界面展开的移动视觉平台。",
+    title: "4G 摄像头坦克",
+    category: "远程视频 / 4G 通信",
+    description: "项目框架已建立，后续补充通信链路、视频上传、控制逻辑与实物展示。",
     mediaType: "video",
     mediaLabel: "视频",
+    featured: true,
   },
   {
-    title: "智能风扇",
-    category: "嵌入式控制",
-    description:
-      "基于 STM32 的嵌入式项目，包含传感、显示、蓝牙通信与移动端联动等能力。",
+    title: "智能蓝牙人体追踪风扇",
+    category: "嵌入式控制 / 人体追踪",
+    description: "项目框架已建立，后续补充蓝牙控制、人体检测、舵机追踪与风扇联动说明。",
     mediaType: "poster",
     mediaLabel: "海报",
+    featured: true,
   },
   {
-    title: "视觉实验记录",
-    category: "机器视觉",
-    description:
-      "持续积累目标检测、图像处理与边缘 AI 原型测试的实验记录与阶段性成果。",
+    title: "游戏力反馈方向盘",
+    category: "力反馈 / 交互设备",
+    description: "项目框架已建立，后续补充方向盘结构、反馈电机、控制算法与游戏联动效果。",
     mediaType: "case",
     mediaLabel: "案例",
+    featured: true,
+  },
+  {
+    title: "OpenMV 视觉搬运小车",
+    category: "OpenMV / 机器视觉",
+    description: "项目框架已建立，后续补充视觉识别、搬运流程、执行机构与路线规划。",
+    mediaType: "vision",
+    mediaLabel: "视觉",
+    featured: true,
+  },
+  {
+    title: "平衡小车",
+    category: "姿态控制 / 运动控制",
+    description: "项目框架已建立，后续补充姿态解算、PID 控制、电机驱动与调参记录。",
+    mediaType: "device",
+    mediaLabel: "控制",
+  },
+  {
+    title: "避障蓝牙巡线小车",
+    category: "传感器 / 蓝牙控制",
+    description: "项目框架已建立，后续补充巡线逻辑、避障传感、蓝牙控制与运行视频。",
+    mediaType: "interface",
+    mediaLabel: "小车",
+  },
+  {
+    title: "语音开关",
+    category: "语音控制 / 智能硬件",
+    description: "项目框架已建立，后续补充语音识别、开关执行、电源控制与使用场景。",
+    mediaType: "case",
+    mediaLabel: "语音",
+  },
+  {
+    title: "NFC 门禁",
+    category: "NFC / 门禁系统",
+    description: "项目框架已建立，后续补充刷卡认证、权限管理、门锁控制与安全设计。",
+    mediaType: "device",
+    mediaLabel: "门禁",
   },
 ];
+
+export const featuredProjectCases = projectCases.filter((project) => project.featured);
 
 export const experienceEntries = [
   {
@@ -128,7 +172,7 @@ export const experienceEntries = [
 
 export const heroShowcaseItems = [
   {
-    title: "4G 小车",
+    title: "4G 坦克",
     caption: "视频中转与远程入口",
     tag: "LIVE CAM",
     href: "http://175.178.171.79:8080",
@@ -156,8 +200,8 @@ export const heroShowcaseItems = [
     tone: "ember",
   },
   {
-    title: "智能风扇",
-    caption: "STM32 系统与硬件联动",
+    title: "追踪风扇",
+    caption: "蓝牙控制与人体追踪",
     tag: "STM32",
     href: "#works",
     tone: "citrus",
