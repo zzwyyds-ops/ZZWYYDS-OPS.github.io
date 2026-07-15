@@ -21,7 +21,7 @@ function HeroVideo() {
         playsInline
         preload="auto"
       >
-        <source src="/media/hero-wallpaper.mp4" type="video/mp4" />
+        <source src="/media/hero-cyberpunk-wallpaper.mp4" type="video/mp4" />
       </video>
     </div>
   );
@@ -139,7 +139,8 @@ function Hero({ onOpenGames }) {
           </div>
 
           <div className="hero-meta">
-            <span>{pageCopy.hero.note}</span>
+            <span className="hero-note">{pageCopy.hero.note}</span>
+            <span className="hero-interest">{pageCopy.hero.interest}</span>
             <span>{pageCopy.hero.author}</span>
             <span>{contact.email}</span>
           </div>
@@ -162,6 +163,7 @@ function RoleSection() {
 
         <div className="role-copy">
           <p>{pageCopy.role.body}</p>
+          <p className="role-hobby">{pageCopy.role.hobby}</p>
 
           <div className="skill-cloud" aria-label={pageCopy.role.skillLabel}>
             {skillSignals.map((signal) => (
