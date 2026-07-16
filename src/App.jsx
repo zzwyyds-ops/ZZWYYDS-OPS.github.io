@@ -19,10 +19,10 @@ function HeroTitle() {
       <span className="hero-line hero-line-primary">
         EMBEDVISION
         <span aria-hidden="true" className="hero-spark hero-spark-large">
-          ✦
+          +
         </span>
         <span aria-hidden="true" className="hero-spark hero-spark-small">
-          ✦
+          +
         </span>
       </span>
       <span className="hero-line hero-line-secondary">
@@ -137,18 +137,51 @@ function HeroShowcase({ onOpenGames }) {
   );
 }
 
+function ProjectMedia({ project }) {
+  if (!project.images?.length) {
+    return (
+      <div className={`media-shell media-${project.mediaType}`}>
+        <span>{project.mediaLabel}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`media-shell media-${project.mediaType} media-gallery-shell`}>
+      <div
+        className={`project-gallery project-gallery-${Math.min(project.images.length, 3)}`}
+      >
+        {project.images.slice(0, 3).map((image, index) => (
+          <figure className={`project-shot project-shot-${index + 1}`} key={image.src}>
+            <img alt={image.alt ?? `${project.title}-${image.label}`} src={image.src} />
+            <figcaption>{image.label}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <span>{project.mediaLabel}</span>
+    </div>
+  );
+}
+
 function ProjectCard({ project, variant = "default", index }) {
   return (
     <article
       className={`work-card work-card-${index + 1} project-card-${variant}`}
     >
-      <div className={`media-shell media-${project.mediaType}`}>
-        <span>{project.mediaLabel}</span>
-      </div>
+      <ProjectMedia project={project} />
+
       <div className="work-body">
         <p>{project.category}</p>
         <h3>{project.title}</h3>
         <p>{project.description}</p>
+
+        {project.highlights?.length ? (
+          <div className="project-highlights" aria-label={`${project.title} 项目亮点`}>
+            {project.highlights.map((highlight) => (
+              <span key={highlight}>{highlight}</span>
+            ))}
+          </div>
+        ) : null}
       </div>
     </article>
   );
