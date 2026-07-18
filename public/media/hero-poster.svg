@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-label="EmbedVision Lab loading background">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#070907"/>
+      <stop offset="0.48" stop-color="#111a26"/>
+      <stop offset="1" stop-color="#030407"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="74%" cy="18%" r="58%">
+      <stop offset="0" stop-color="#d8ff3f" stop-opacity="0.32"/>
+      <stop offset="0.36" stop-color="#2a5d67" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#030407" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0V64" fill="none" stroke="#d8ff3f" stroke-opacity="0.08"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="url(#glow)"/>
+  <rect width="1600" height="900" fill="url(#grid)" opacity="0.72"/>
+  <path d="M0 640C244 528 455 570 658 506c239-75 402-257 942-205v599H0Z" fill="#030407" opacity="0.74"/>
+  <path d="M0 686c228-77 431-54 647-96 338-65 502-226 953-164" fill="none" stroke="#d8ff3f" stroke-opacity="0.18" stroke-width="2"/>
+  <g opacity="0.72">
+    <text x="88" y="706" fill="#f4f7f0" font-family="Arial, sans-serif" font-size="78" font-weight="800" letter-spacing="3">EMBEDVISION</text>
+    <text x="92" y="772" fill="#d8ff3f" font-family="Arial, sans-serif" font-size="40" font-weight="700" letter-spacing="2">LAB SPACE</text>
+  </g>
+</svg>

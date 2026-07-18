@@ -28,6 +28,70 @@ const ASCIIText = lazy(() =>
   })),
 );
 
+function useDeferredFeature(delay = 1800) {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const connection = navigator.connection ?? navigator.mozConnection ?? navigator.webkitConnection;
+    const saveData = Boolean(connection?.saveData);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (saveData || reducedMotion) {
+      return undefined;
+    }
+
+    const start = () => setEnabled(true);
+    const idleId = window.requestIdleCallback
+      ? window.requestIdleCallback(start, { timeout: delay + 1200 })
+      : null;
+    const timerId = window.setTimeout(start, delay);
+
+    return () => {
+      window.clearTimeout(timerId);
+      if (idleId != null && window.cancelIdleCallback) {
+        window.cancelIdleCallback(idleId);
+      }
+    };
+  }, [delay]);
+
+  return enabled;
+}
+
+function useDotBackgroundActive() {
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    let frameId = null;
+
+    const update = () => {
+      frameId = null;
+      setActive(!document.hidden && window.scrollY > window.innerHeight * 0.42);
+    };
+    const schedule = () => {
+      if (frameId == null) {
+        frameId = window.requestAnimationFrame(update);
+      }
+    };
+    const onVisibilityChange = () => update();
+
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    return () => {
+      if (frameId != null) {
+        window.cancelAnimationFrame(frameId);
+      }
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, []);
+
+  return active;
+}
+
 function HeroTitle() {
   return (
     <h1 className="hero-title">
@@ -49,31 +113,101 @@ function HeroTitle() {
 }
 
 function HeroVideo({ children }) {
+  const videoRef = useRef(null);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+  const asciiEnabled = useDeferredFeature(2600);
+
+  useEffect(() => {
+    const connection = navigator.connection ?? navigator.mozConnection ?? navigator.webkitConnection;
+    const saveData = Boolean(connection?.saveData);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (saveData || reducedMotion) {
+      return undefined;
+    }
+
+    const loadVideo = () => setShouldLoadVideo(true);
+    const idleId = window.requestIdleCallback
+      ? window.requestIdleCallback(loadVideo, { timeout: 1800 })
+      : null;
+    const timerId = window.setTimeout(loadVideo, 900);
+
+    return () => {
+      window.clearTimeout(timerId);
+      if (idleId != null && window.cancelIdleCallback) {
+        window.cancelIdleCallback(idleId);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+
+    if (!video || !shouldLoadVideo) {
+      return undefined;
+    }
+
+    const updatePlayback = (visible) => {
+      if (visible && !document.hidden) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => updatePlayback(entry.isIntersecting && entry.intersectionRatio > 0.28),
+      { threshold: [0, 0.28, 0.65] },
+    );
+    const onVisibilityChange = () => {
+      const rect = video.getBoundingClientRect();
+      const visible = rect.bottom > 0 && rect.top < window.innerHeight;
+      updatePlayback(visible);
+    };
+
+    observer.observe(video);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    onVisibilityChange();
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      video.pause();
+    };
+  }, [shouldLoadVideo]);
+
   return (
     <div className="hero-video-layer">
       <video
         aria-hidden="true"
-        autoPlay
         className="hero-video"
         loop
         muted
         playsInline
-        preload="metadata"
+        poster="/media/hero-poster.svg"
+        preload="none"
+        ref={videoRef}
       >
-        <source src="/media/hero-cyberpunk-wallpaper.mp4" type="video/mp4" />
+        {shouldLoadVideo ? (
+          <source src="/media/hero-cyberpunk-wallpaper.mp4" type="video/mp4" />
+        ) : null}
       </video>
       <div className="hero-video-title">
         <HeroTitle />
         <div className="hero-ascii-panel" aria-hidden="true">
-          <Suspense fallback={<span className="ascii-static">EMBEDVISION</span>}>
-            <ASCIIText
-              asciiFontSize={8}
-              enableWaves={true}
-              text="EMBEDVISION"
-              textColor="#d8ff3f"
-              textFontSize={150}
-            />
-          </Suspense>
+          {asciiEnabled ? (
+            <Suspense fallback={<span className="ascii-static">EMBEDVISION</span>}>
+              <ASCIIText
+                asciiFontSize={8}
+                enableWaves={true}
+                text="EMBEDVISION"
+                textColor="#d8ff3f"
+                textFontSize={150}
+              />
+            </Suspense>
+          ) : (
+            <span className="ascii-static">EMBEDVISION</span>
+          )}
         </div>
       </div>
       {children}
@@ -827,6 +961,7 @@ export default function App() {
   const [projectsOpen, setProjectsOpen] = useState(false);
 
   useScrollReveal();
+  const dotBackgroundActive = useDotBackgroundActive();
 
   const openGames = useCallback((gameId = "2048") => {
     setActiveGame(gameId);
@@ -849,16 +984,18 @@ export default function App() {
   return (
     <>
       <div className="site-dot-background" aria-hidden="true">
-        <DotField
-          bulgeStrength={54}
-          cursorRadius={360}
-          dotRadius={1.8}
-          dotSpacing={15}
-          glowColor="rgba(216, 255, 63, 0.24)"
-          glowRadius={220}
-          gradientFrom="rgba(216, 255, 63, 0.56)"
-          gradientTo="rgba(246, 255, 209, 0.22)"
-        />
+        {dotBackgroundActive ? (
+          <DotField
+            bulgeStrength={54}
+            cursorRadius={360}
+            dotRadius={1.8}
+            dotSpacing={15}
+            glowColor="rgba(216, 255, 63, 0.24)"
+            glowRadius={220}
+            gradientFrom="rgba(216, 255, 63, 0.56)"
+            gradientTo="rgba(246, 255, 209, 0.22)"
+          />
+        ) : null}
       </div>
 
       <main className="app-shell">
