@@ -1,17 +1,21 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  careerTags,
+  capabilityFacts,
   contact,
+  educationFacts,
   experienceEntries,
-  featuredProjectCases,
   heroShowcaseItems,
   manifestoQuotes,
   navItems,
   pageCopy,
+  problemStatements,
   profileFacts,
   projectCases,
   skillSignals,
 } from "./data/portfolio.js";
 import { GameHubDrawer } from "./components/GameHubDrawer.jsx";
+import { ProjectHubDrawer } from "./components/ProjectHubDrawer.jsx";
 
 function HeroTitle() {
   return (
@@ -128,6 +132,15 @@ function HeroShowcase({ onOpenGames }) {
           onOpenGames={onOpenGames}
           title={item.title}
         >
+          <span
+            aria-hidden="true"
+            className={`showcase-visual visual-${item.visual}`}
+          >
+            <span className="visual-part visual-part-a" />
+            <span className="visual-part visual-part-b" />
+            <span className="visual-part visual-part-c" />
+            <span className="visual-part visual-part-d" />
+          </span>
           <span className="showcase-tag">{item.tag}</span>
           <strong>{item.title}</strong>
           <p>{item.caption}</p>
@@ -137,7 +150,7 @@ function HeroShowcase({ onOpenGames }) {
   );
 }
 
-function ProjectMedia({ project }) {
+function ProjectMedia({ project, variant = "default" }) {
   if (!project.images?.length) {
     return (
       <div className={`media-shell media-${project.mediaType}`}>
@@ -147,13 +160,17 @@ function ProjectMedia({ project }) {
   }
 
   return (
-    <div className={`media-shell media-${project.mediaType} media-gallery-shell`}>
+    <div className={`media-shell media-${project.mediaType} media-gallery-shell media-gallery-${variant}`}>
       <div
-        className={`project-gallery project-gallery-${Math.min(project.images.length, 3)}`}
+        className={`project-gallery project-gallery-${Math.min(project.images.length, 3)} project-gallery-${variant} project-gallery-${project.id}`}
       >
         {project.images.slice(0, 3).map((image, index) => (
           <figure className={`project-shot project-shot-${index + 1}`} key={image.src}>
-            <img alt={image.alt ?? `${project.title}-${image.label}`} src={image.src} />
+            <img
+              alt={image.alt ?? `${project.title}-${image.label}`}
+              src={image.src}
+              style={{ objectPosition: image.position ?? "center center" }}
+            />
             <figcaption>{image.label}</figcaption>
           </figure>
         ))}
@@ -163,25 +180,31 @@ function ProjectMedia({ project }) {
   );
 }
 
-function ProjectCard({ project, variant = "default", index }) {
+function ProjectCard({ project, variant = "default", index, onOpenProject }) {
   return (
-    <article
-      className={`work-card work-card-${index + 1} project-card-${variant}`}
-    >
-      <ProjectMedia project={project} />
+    <article className={`work-card work-card-${index + 1} project-card-${variant}`}>
+      <ProjectMedia project={project} variant={variant} />
 
       <div className="work-body">
         <p>{project.category}</p>
         <h3>{project.title}</h3>
-        <p>{project.description}</p>
+        <p>{project.homeDescription ?? project.description}</p>
 
         {project.highlights?.length ? (
           <div className="project-highlights" aria-label={`${project.title} 项目亮点`}>
-            {project.highlights.map((highlight) => (
+            {project.highlights.slice(0, 4).map((highlight) => (
               <span key={highlight}>{highlight}</span>
             ))}
           </div>
         ) : null}
+
+        <button
+          className="project-card-action"
+          onClick={() => onOpenProject(project.id)}
+          type="button"
+        >
+          在作品抽屉中展开
+        </button>
       </div>
     </article>
   );
@@ -202,6 +225,8 @@ function Hero({ onOpenGames }) {
 
           <div className="hero-meta">
             <span className="hero-note">{pageCopy.hero.note}</span>
+            <span className="hero-credential">{pageCopy.hero.target}</span>
+            <span className="hero-credential">{pageCopy.hero.credential}</span>
             <span className="hero-interest">{pageCopy.hero.interest}</span>
             <span>{pageCopy.hero.author}</span>
             <span>{contact.email}</span>
@@ -214,13 +239,241 @@ function Hero({ onOpenGames }) {
   );
 }
 
-function RoleSection() {
+function ProjectShowcaseRail({ onOpenProject }) {
+  const scrollerRef = useRef(null);
+  const resumeTimerRef = useRef(null);
+  const dragRef = useRef({
+    active: false,
+    scrollLeft: 0,
+    startX: 0,
+    userControl: false,
+    wasDragging: false,
+  });
+  const preferredProjectIds = [
+    "tank-4g",
+    "fan-tracking",
+    "wheel-force",
+    "openmv-car",
+    "pet-feeder",
+    "car-4g-remote",
+  ];
+  const showcaseProjects = [
+    ...preferredProjectIds
+      .map((id) => projectCases.find((project) => project.id === id))
+      .filter(Boolean),
+    ...projectCases.filter((project) => !preferredProjectIds.includes(project.id)),
+  ].filter((project) => project.images?.[0]);
+  const railProjects = [...showcaseProjects, ...showcaseProjects];
+  const railImageOverrides = {
+    "tank-4g": "/media/projects/tank-4g/hardware.jpg",
+  };
+
+  useEffect(() => {
+    let lastTime = Date.now();
+
+    const intervalId = window.setInterval(() => {
+      const scroller = scrollerRef.current;
+      const now = Date.now();
+
+      if (scroller && !dragRef.current.active && !dragRef.current.userControl) {
+        const delta = Math.min(now - lastTime, 48);
+        const loopPoint = scroller.scrollWidth / 2;
+
+        scroller.scrollLeft += delta * 0.12;
+
+        if (loopPoint > 0 && scroller.scrollLeft >= loopPoint) {
+          scroller.scrollLeft -= loopPoint;
+        }
+      }
+
+      lastTime = now;
+    }, 16);
+
+    return () => {
+      window.clearInterval(intervalId);
+      if (resumeTimerRef.current) {
+        window.clearTimeout(resumeTimerRef.current);
+      }
+    };
+  }, []);
+
+  const resumeAutoScroll = useCallback((delay = 800) => {
+    if (resumeTimerRef.current) {
+      window.clearTimeout(resumeTimerRef.current);
+    }
+
+    resumeTimerRef.current = window.setTimeout(() => {
+      dragRef.current.userControl = false;
+    }, delay);
+  }, []);
+
+  const handleWheel = useCallback((event) => {
+    const scroller = scrollerRef.current;
+
+    if (!scroller || Math.abs(event.deltaY) < Math.abs(event.deltaX)) {
+      return;
+    }
+
+    event.preventDefault();
+    dragRef.current.userControl = true;
+    scroller.scrollLeft += event.deltaY;
+    resumeAutoScroll(900);
+  }, [resumeAutoScroll]);
+
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+
+    if (!scroller) {
+      return undefined;
+    }
+
+    const onNativeWheel = (event) => {
+      if (Math.abs(event.deltaY) < Math.abs(event.deltaX)) {
+        return;
+      }
+
+      event.preventDefault();
+      dragRef.current.userControl = true;
+      scroller.scrollLeft += event.deltaY;
+      resumeAutoScroll(900);
+    };
+
+    scroller.addEventListener("wheel", onNativeWheel, { passive: false });
+
+    return () => {
+      scroller.removeEventListener("wheel", onNativeWheel);
+    };
+  }, [resumeAutoScroll]);
+
+  const handlePointerDown = useCallback((event) => {
+    const scroller = scrollerRef.current;
+
+    if (!scroller || event.button !== 0) {
+      return;
+    }
+
+    dragRef.current = {
+      active: true,
+      scrollLeft: scroller.scrollLeft,
+      startX: event.clientX,
+      userControl: true,
+      wasDragging: false,
+    };
+    scroller.setPointerCapture(event.pointerId);
+  }, []);
+
+  const handlePointerMove = useCallback((event) => {
+    const scroller = scrollerRef.current;
+
+    if (!scroller || !dragRef.current.active) {
+      return;
+    }
+
+    const distance = event.clientX - dragRef.current.startX;
+    if (Math.abs(distance) > 6) {
+      dragRef.current.wasDragging = true;
+    }
+    scroller.scrollLeft = dragRef.current.scrollLeft - distance;
+  }, []);
+
+  const endDrag = useCallback((event) => {
+    const scroller = scrollerRef.current;
+
+    if (scroller?.hasPointerCapture(event.pointerId)) {
+      scroller.releasePointerCapture(event.pointerId);
+    }
+    dragRef.current.active = false;
+    resumeAutoScroll(500);
+  }, [resumeAutoScroll]);
+
+  return (
+    <section className="project-rail-panel" aria-label="作品速览">
+      <div className="project-rail-head">
+        <div>
+          <p className="section-note">作品速览</p>
+          <h2>先看作品，再看能力。</h2>
+        </div>
+        <div className="project-rail-actions">
+          <p>把最能代表工程落地能力的项目先摆出来，让嵌入式、机器视觉、远程控制和智能硬件成果一眼可见。</p>
+          <button
+            className="project-rail-detail-button"
+            onClick={() => onOpenProject(showcaseProjects[0]?.id)}
+            type="button"
+          >
+            查看完整技术细节
+          </button>
+        </div>
+      </div>
+
+      <div
+        className="project-rail-viewport"
+        onPointerCancel={endDrag}
+        onPointerDown={handlePointerDown}
+        onPointerLeave={endDrag}
+        onPointerMove={handlePointerMove}
+        onPointerUp={endDrag}
+        ref={scrollerRef}
+      >
+        <div className="project-rail-track">
+          {railProjects.map((project, index) => {
+            const overrideSrc = railImageOverrides[project.id];
+            const image = overrideSrc
+              ? project.images.find((item) => item.src === overrideSrc) ?? project.images[0]
+              : project.images[0];
+
+            return (
+              <button
+                aria-hidden={index >= showcaseProjects.length}
+                className="project-rail-card"
+                key={`${project.id}-${index}`}
+                tabIndex={index >= showcaseProjects.length ? -1 : 0}
+                onClick={(event) => {
+                  if (dragRef.current.wasDragging) {
+                    event.preventDefault();
+                    dragRef.current.wasDragging = false;
+                    return;
+                  }
+
+                  onOpenProject(project.id);
+                }}
+                type="button"
+              >
+                <img
+                  alt={image.alt ?? project.title}
+                  src={image.src}
+                  style={{ objectPosition: image.position ?? "center center" }}
+                />
+                <span>{project.category}</span>
+                <strong>{project.title}</strong>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function RoleSection({ onOpenProject }) {
   return (
     <section className="section" id="role">
       <div className="section-inner role-grid">
-        <div>
-          <p className="section-note">{pageCopy.role.note}</p>
-          <h2>{pageCopy.role.title}</h2>
+        <ProjectShowcaseRail onOpenProject={onOpenProject} />
+
+        <div className="role-intro-panel">
+          <div>
+            <p className="section-note">{pageCopy.role.note}</p>
+            <h2>{pageCopy.role.title}</h2>
+          </div>
+
+          <section className="career-tag-panel role-credential-band" aria-label="简历关键词">
+            <p className="role-panel-label">简历关键词</p>
+            <div className="career-tag-row">
+              <span>本科 / 电子科学与技术</span>
+              <span>嵌入式开发 / 机器视觉</span>
+              <span>远程控制 / 边缘设备 / AI 工作流</span>
+            </div>
+          </section>
         </div>
 
         <div className="role-copy">
@@ -240,13 +493,26 @@ function RoleSection() {
               </div>
             </section>
 
-            <section className="role-panel" aria-label={pageCopy.role.manifestoLabel}>
-              <p className="role-panel-label">{pageCopy.role.manifestoLabel}</p>
-              <div className="manifesto-list">
-                {manifestoQuotes.map((quote) => (
-                  <p className="manifesto-quote" key={quote}>
-                    {quote}
-                  </p>
+            <section className="role-panel" aria-label={pageCopy.role.experienceLabel}>
+              <p className="role-panel-label">{pageCopy.role.experienceLabel}</p>
+              <div className="profile-facts">
+                {capabilityFacts.map((fact) => (
+                  <div className="profile-fact" key={fact.label}>
+                    <span>{fact.label}</span>
+                    <strong>{fact.value}</strong>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="role-panel" aria-label={pageCopy.role.educationLabel}>
+              <p className="role-panel-label">{pageCopy.role.educationLabel}</p>
+              <div className="profile-facts">
+                {educationFacts.map((fact) => (
+                  <div className={`profile-fact ${fact.subtle ? "is-subtle" : ""}`} key={fact.label}>
+                    <span>{fact.label}</span>
+                    <strong>{fact.value}</strong>
+                  </div>
                 ))}
               </div>
             </section>
@@ -257,51 +523,57 @@ function RoleSection() {
               <span key={signal}>{signal}</span>
             ))}
           </div>
+
+          <section className="problem-grid-panel" aria-label={pageCopy.role.problemLabel}>
+            <p className="role-panel-label">{pageCopy.role.problemLabel}</p>
+            <div className="problem-grid">
+              {problemStatements.map((item) => (
+                <article className="problem-card" key={item.title}>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="manifesto-inline" aria-label={pageCopy.role.manifestoLabel}>
+            <p className="role-panel-label">{pageCopy.role.manifestoLabel}</p>
+            <div className="manifesto-list">
+              {manifestoQuotes.map((quote) => (
+                <p className="manifesto-quote" key={quote}>
+                  {quote}
+                </p>
+              ))}
+            </div>
+          </section>
         </div>
       </div>
     </section>
   );
 }
 
-function FeaturedProjectsSection() {
-  return (
-    <section className="section featured-section" id="featured">
-      <div className="section-inner">
-        <div className="section-heading featured-heading">
-          <div>
-            <p className="section-note">{pageCopy.featured.note}</p>
-            <h2>{pageCopy.featured.title}</h2>
-          </div>
-          <p className="featured-copy">{pageCopy.featured.body}</p>
-        </div>
-
-        <div className="featured-grid">
-          {featuredProjectCases.map((project, index) => (
-            <ProjectCard
-              index={index}
-              key={project.title}
-              project={project}
-              variant="featured"
-            />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function WorksSection() {
+function WorksSection({ onOpenProject, onOpenProjects }) {
   return (
     <section className="section works-section" id="works">
-      <div className="section-inner">
-        <div className="section-heading">
-          <p className="section-note">{pageCopy.works.note}</p>
-          <h2>{pageCopy.works.title}</h2>
+      <div className="section-inner works-entry-panel">
+        <div className="section-tools-row works-tools-row">
+          <button className="section-cta-button section-cta-strong" onClick={() => onOpenProjects()} type="button">
+            {pageCopy.works.cta}
+          </button>
         </div>
 
-        <div className="works-grid">
-          {projectCases.map((project, index) => (
-            <ProjectCard index={index} key={project.title} project={project} />
+        <div className="project-index-grid">
+          {projectCases.map((project) => (
+            <button
+              className="project-index-card"
+              key={project.id}
+              onClick={() => onOpenProject(project.id)}
+              type="button"
+            >
+              <span>{project.mediaLabel}</span>
+              <strong>{project.title}</strong>
+              <p>{project.homeDescription}</p>
+            </button>
           ))}
         </div>
       </div>
@@ -342,13 +614,29 @@ function ContactSection() {
   return (
     <section className="section contact-section" id="contact">
       <div className="section-inner contact-panel">
-        <div>
+        <div className="contact-copy">
           <p className="section-note">{pageCopy.contact.note}</p>
           <h2>{pageCopy.contact.title}</h2>
+          <div className="contact-link-row" aria-label="联系与开源链接">
+            <a className="contact-chip contact-chip-email" href={`mailto:${contact.email}`}>
+              <span className="contact-chip-icon" aria-hidden="true">
+                QQ
+              </span>
+              <span>{contact.email}</span>
+            </a>
+            <a
+              className="contact-chip contact-chip-github"
+              href="https://github.com/zzwyyds-ops/ZZWYYDS-OPS.github.io"
+              rel="noreferrer"
+              target="_blank"
+            >
+              <span className="contact-chip-icon" aria-hidden="true">
+                GH
+              </span>
+              <span>zzwyyds-ops/ZZWYYDS-OPS.github.io</span>
+            </a>
+          </div>
         </div>
-        <a className="email-link" href={`mailto:${contact.email}`}>
-          {contact.email}
-        </a>
       </div>
     </section>
   );
@@ -357,6 +645,8 @@ function ContactSection() {
 export default function App() {
   const [activeGame, setActiveGame] = useState("2048");
   const [gamesOpen, setGamesOpen] = useState(false);
+  const [activeProjectId, setActiveProjectId] = useState(projectCases[0]?.id ?? "");
+  const [projectsOpen, setProjectsOpen] = useState(false);
 
   const openGames = useCallback((gameId = "2048") => {
     setActiveGame(gameId);
@@ -367,16 +657,32 @@ export default function App() {
     setGamesOpen(false);
   }, []);
 
+  const openProjects = useCallback((projectId = projectCases[0]?.id ?? "") => {
+    setActiveProjectId(projectId);
+    setProjectsOpen(true);
+  }, []);
+
+  const closeProjects = useCallback(() => {
+    setProjectsOpen(false);
+  }, []);
+
   return (
     <>
       <main className="app-shell">
         <Hero onOpenGames={openGames} />
-        <FeaturedProjectsSection />
-        <RoleSection />
-        <WorksSection />
+        <RoleSection onOpenProject={openProjects} />
+        <WorksSection onOpenProject={openProjects} onOpenProjects={openProjects} />
         <ExperienceSection onOpenGames={openGames} />
         <ContactSection />
       </main>
+
+      <ProjectHubDrawer
+        activeProjectId={activeProjectId}
+        onClose={closeProjects}
+        onSelectProject={setActiveProjectId}
+        open={projectsOpen}
+        projects={projectCases}
+      />
 
       <GameHubDrawer
         activeGame={activeGame}
