@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
   careerTags,
   capabilityFacts,
@@ -16,6 +16,17 @@ import {
 } from "./data/portfolio.js";
 import { GameHubDrawer } from "./components/GameHubDrawer.jsx";
 import { ProjectHubDrawer } from "./components/ProjectHubDrawer.jsx";
+import DotField from "./components/DotField.jsx";
+import {
+  fallBackToOriginalImage,
+  getOptimizedProjectImageSrc,
+} from "./utils/media.js";
+
+const ASCIIText = lazy(() =>
+  import("./components/ASCIIText.jsx").then((module) => ({
+    default: module.ASCIIText,
+  })),
+);
 
 function HeroTitle() {
   return (
@@ -37,7 +48,7 @@ function HeroTitle() {
   );
 }
 
-function HeroVideo() {
+function HeroVideo({ children }) {
   return (
     <div className="hero-video-layer">
       <video
@@ -47,13 +58,25 @@ function HeroVideo() {
         loop
         muted
         playsInline
-        preload="auto"
+        preload="metadata"
       >
         <source src="/media/hero-cyberpunk-wallpaper.mp4" type="video/mp4" />
       </video>
       <div className="hero-video-title">
         <HeroTitle />
+        <div className="hero-ascii-panel" aria-hidden="true">
+          <Suspense fallback={<span className="ascii-static">EMBEDVISION</span>}>
+            <ASCIIText
+              asciiFontSize={8}
+              enableWaves={true}
+              text="EMBEDVISION"
+              textColor="#d8ff3f"
+              textFontSize={150}
+            />
+          </Suspense>
+        </div>
       </div>
+      {children}
     </div>
   );
 }
@@ -122,8 +145,62 @@ function InteractiveEntry({
 }
 
 function HeroShowcase({ onOpenGames }) {
+  const dockRef = useRef(null);
+
+  const resetDock = useCallback(() => {
+    const cards = dockRef.current?.querySelectorAll(".showcase-card");
+
+    cards?.forEach((card) => {
+      card.style.removeProperty("--dock-scale");
+      card.style.removeProperty("--dock-lift");
+      card.style.removeProperty("--dock-glow");
+      card.style.removeProperty("--dock-icon-lift");
+      card.style.removeProperty("--dock-shadow-y");
+      card.style.removeProperty("--dock-glow-size");
+      card.style.removeProperty("--dock-glow-alpha");
+      card.style.removeProperty("z-index");
+    });
+  }, []);
+
+  const handleDockMove = useCallback((event) => {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      return;
+    }
+
+    const cards = dockRef.current?.querySelectorAll(".showcase-card");
+
+    cards?.forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const center = rect.left + rect.width / 2;
+      const distance = Math.abs(event.clientX - center);
+      const influence = Math.max(0, 1 - distance / (rect.width * 1.45));
+      const eased = influence * influence;
+      const scale = 1 + eased * 0.18;
+      const lift = eased * -18;
+      const iconLift = lift * 0.12;
+      const shadowY = 14 + eased * 18;
+      const glowSize = eased * 34;
+      const glowAlpha = 0.05 + eased * 0.12;
+
+      card.style.setProperty("--dock-scale", scale.toFixed(3));
+      card.style.setProperty("--dock-lift", `${lift.toFixed(1)}px`);
+      card.style.setProperty("--dock-glow", eased.toFixed(3));
+      card.style.setProperty("--dock-icon-lift", `${iconLift.toFixed(1)}px`);
+      card.style.setProperty("--dock-shadow-y", `${shadowY.toFixed(1)}px`);
+      card.style.setProperty("--dock-glow-size", `${glowSize.toFixed(1)}px`);
+      card.style.setProperty("--dock-glow-alpha", glowAlpha.toFixed(3));
+      card.style.zIndex = String(Math.round(10 + eased * 20));
+    });
+  }, []);
+
   return (
-    <div className="hero-showcase" aria-label="精选入口">
+    <div
+      className="hero-showcase"
+      aria-label="精选入口"
+      onPointerLeave={resetDock}
+      onPointerMove={handleDockMove}
+      ref={dockRef}
+    >
       {heroShowcaseItems.map((item) => (
         <InteractiveEntry
           className={`showcase-card tone-${item.tone}`}
@@ -168,7 +245,10 @@ function ProjectMedia({ project, variant = "default" }) {
           <figure className={`project-shot project-shot-${index + 1}`} key={image.src}>
             <img
               alt={image.alt ?? `${project.title}-${image.label}`}
-              src={image.src}
+              decoding="async"
+              loading="lazy"
+              onError={(event) => fallBackToOriginalImage(event, image.src)}
+              src={getOptimizedProjectImageSrc(image.src)}
               style={{ objectPosition: image.position ?? "center center" }}
             />
             <figcaption>{image.label}</figcaption>
@@ -215,25 +295,25 @@ function Hero({ onOpenGames }) {
     <section className="hero-shell" id="top">
       <div className="hero-stage">
         <Header onOpenGames={onOpenGames} />
-        <HeroVideo />
+        <HeroVideo>
+          <div className="hero-content">
+            <div className="hero-copy">
+              <p className="hero-subtitle">{pageCopy.hero.subtitle}</p>
+            </div>
+
+            <div className="hero-meta">
+              <span className="hero-note">{pageCopy.hero.note}</span>
+              <span className="hero-credential">{pageCopy.hero.target}</span>
+              <span className="hero-credential">{pageCopy.hero.credential}</span>
+              <span className="hero-interest">{pageCopy.hero.interest}</span>
+              <span>{pageCopy.hero.author}</span>
+              <span>{contact.email}</span>
+            </div>
+          </div>
+
+          <HeroShowcase onOpenGames={onOpenGames} />
+        </HeroVideo>
         <div aria-hidden="true" className="hero-orb" />
-
-        <div className="hero-content">
-          <div className="hero-copy">
-            <p className="hero-subtitle">{pageCopy.hero.subtitle}</p>
-          </div>
-
-          <div className="hero-meta">
-            <span className="hero-note">{pageCopy.hero.note}</span>
-            <span className="hero-credential">{pageCopy.hero.target}</span>
-            <span className="hero-credential">{pageCopy.hero.credential}</span>
-            <span className="hero-interest">{pageCopy.hero.interest}</span>
-            <span>{pageCopy.hero.author}</span>
-            <span>{contact.email}</span>
-          </div>
-        </div>
-
-        <HeroShowcase onOpenGames={onOpenGames} />
       </div>
     </section>
   );
@@ -241,6 +321,7 @@ function Hero({ onOpenGames }) {
 
 function ProjectShowcaseRail({ onOpenProject }) {
   const scrollerRef = useRef(null);
+  const isRailVisibleRef = useRef(false);
   const resumeTimerRef = useRef(null);
   const dragRef = useRef({
     active: false,
@@ -267,19 +348,60 @@ function ProjectShowcaseRail({ onOpenProject }) {
   const railImageOverrides = {
     "tank-4g": "/media/projects/tank-4g/hardware.jpg",
   };
+  const hudSignals = [
+    { label: "Embedded Core", value: "STM32 / ESP32", status: "多板协同" },
+    { label: "Vision Pipeline", value: "OpenMV / ESP32-CAM", status: "图像链路" },
+    { label: "Realtime Control", value: "FreeRTOS / MQTT", status: "低延迟控制" },
+    { label: "AI Workflow", value: "Agent / Vibe Coding", status: "效率增强" },
+  ];
 
   useEffect(() => {
     let lastTime = Date.now();
+
+    const scroller = scrollerRef.current;
+    const observer = scroller
+      ? new IntersectionObserver(
+          ([entry]) => {
+            isRailVisibleRef.current =
+              entry.isIntersecting && entry.intersectionRatio > 0.18;
+          },
+          { threshold: [0, 0.18, 0.5] },
+        )
+      : null;
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        isRailVisibleRef.current = false;
+        return;
+      }
+
+      const rect = scroller?.getBoundingClientRect();
+      isRailVisibleRef.current = Boolean(
+        rect && rect.bottom > 0 && rect.top < window.innerHeight,
+      );
+    };
+
+    if (scroller && observer) {
+      observer.observe(scroller);
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     const intervalId = window.setInterval(() => {
       const scroller = scrollerRef.current;
       const now = Date.now();
 
-      if (scroller && !dragRef.current.active && !dragRef.current.userControl) {
+      if (
+        scroller &&
+        isRailVisibleRef.current &&
+        !document.hidden &&
+        !dragRef.current.active &&
+        !dragRef.current.userControl
+      ) {
         const delta = Math.min(now - lastTime, 48);
         const loopPoint = scroller.scrollWidth / 2;
 
-        scroller.scrollLeft += delta * 0.12;
+        scroller.scrollLeft += delta * 0.1;
 
         if (loopPoint > 0 && scroller.scrollLeft >= loopPoint) {
           scroller.scrollLeft -= loopPoint;
@@ -287,10 +409,12 @@ function ProjectShowcaseRail({ onOpenProject }) {
       }
 
       lastTime = now;
-    }, 16);
+    }, 40);
 
     return () => {
       window.clearInterval(intervalId);
+      observer?.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       if (resumeTimerRef.current) {
         window.clearTimeout(resumeTimerRef.current);
       }
@@ -391,10 +515,8 @@ function ProjectShowcaseRail({ onOpenProject }) {
       <div className="project-rail-head">
         <div>
           <p className="section-note">作品速览</p>
-          <h2>先看作品，再看能力。</h2>
         </div>
         <div className="project-rail-actions">
-          <p>把最能代表工程落地能力的项目先摆出来，让嵌入式、机器视觉、远程控制和智能硬件成果一眼可见。</p>
           <button
             className="project-rail-detail-button"
             onClick={() => onOpenProject(showcaseProjects[0]?.id)}
@@ -440,15 +562,33 @@ function ProjectShowcaseRail({ onOpenProject }) {
               >
                 <img
                   alt={image.alt ?? project.title}
-                  src={image.src}
+                  decoding="async"
+                  loading={index < 4 ? "eager" : "lazy"}
+                  onError={(event) => fallBackToOriginalImage(event, image.src)}
+                  src={getOptimizedProjectImageSrc(image.src)}
                   style={{ objectPosition: image.position ?? "center center" }}
                 />
                 <span>{project.category}</span>
                 <strong>{project.title}</strong>
+                <div className="project-rail-meta" aria-hidden="true">
+                  {(project.highlights ?? []).slice(0, 3).map((highlight) => (
+                    <em key={highlight}>{highlight}</em>
+                  ))}
+                </div>
               </button>
             );
           })}
         </div>
+      </div>
+
+      <div className="hud-strip" aria-label="能力状态">
+        {hudSignals.map((item) => (
+          <div className="hud-tile" key={item.label}>
+            <span>{item.label}</span>
+            <strong>{item.value}</strong>
+            <em>{item.status}</em>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -642,11 +782,51 @@ function ContactSection() {
   );
 }
 
+function useScrollReveal() {
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return undefined;
+    }
+
+    const revealTargets = document.querySelectorAll(
+      ".section-inner, .project-rail-card, .hud-tile, .project-index-card, .experience-card, .contact-chip",
+    );
+
+    revealTargets.forEach((target, index) => {
+      target.classList.add("reveal-ready");
+      target.style.setProperty("--reveal-delay", `${Math.min(index % 8, 5) * 38}ms`);
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-revealed");
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        rootMargin: "0px 0px -8% 0px",
+        threshold: 0.12,
+      },
+    );
+
+    revealTargets.forEach((target) => observer.observe(target));
+
+    return () => observer.disconnect();
+  }, []);
+}
+
 export default function App() {
   const [activeGame, setActiveGame] = useState("2048");
   const [gamesOpen, setGamesOpen] = useState(false);
   const [activeProjectId, setActiveProjectId] = useState(projectCases[0]?.id ?? "");
   const [projectsOpen, setProjectsOpen] = useState(false);
+
+  useScrollReveal();
 
   const openGames = useCallback((gameId = "2048") => {
     setActiveGame(gameId);
@@ -668,6 +848,19 @@ export default function App() {
 
   return (
     <>
+      <div className="site-dot-background" aria-hidden="true">
+        <DotField
+          bulgeStrength={54}
+          cursorRadius={360}
+          dotRadius={1.8}
+          dotSpacing={15}
+          glowColor="rgba(216, 255, 63, 0.24)"
+          glowRadius={220}
+          gradientFrom="rgba(216, 255, 63, 0.56)"
+          gradientTo="rgba(246, 255, 209, 0.22)"
+        />
+      </div>
+
       <main className="app-shell">
         <Hero onOpenGames={openGames} />
         <RoleSection onOpenProject={openProjects} />

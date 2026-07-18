@@ -1,5 +1,9 @@
 import { useEffect, useRef } from "react";
 import { pageCopy } from "../data/portfolio.js";
+import {
+  fallBackToOriginalImage,
+  getOptimizedProjectImageSrc,
+} from "../utils/media.js";
 
 function ProjectGallery({ project }) {
   const galleryImages = project.images?.slice(0, 4) ?? [];
@@ -19,7 +23,10 @@ function ProjectGallery({ project }) {
           <figure className={`project-shot project-shot-${index + 1}`} key={image.src}>
             <img
               alt={image.alt ?? `${project.title}-${image.label}`}
-              src={image.src}
+              decoding="async"
+              loading={index === 0 ? "eager" : "lazy"}
+              onError={(event) => fallBackToOriginalImage(event, image.src)}
+              src={getOptimizedProjectImageSrc(image.src)}
               style={{ objectPosition: image.position ?? "center center" }}
             />
             <figcaption>{image.label}</figcaption>

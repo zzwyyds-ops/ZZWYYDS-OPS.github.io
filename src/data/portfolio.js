@@ -881,7 +881,7 @@ export const experienceEntries = [
 export const heroShowcaseItems = [
   {
     title: "4G 坦克",
-    caption: "视频中转与远程控制入口",
+    caption: "视频中转 / 远程控制",
     tag: "LIVE CAM",
     href: "http://175.178.171.79:8080",
     tone: "circuit",
@@ -889,7 +889,7 @@ export const heroShowcaseItems = [
   },
   {
     title: "视觉演示",
-    caption: "识别流程与实验预览",
+    caption: "识别流程 / 实验预览",
     tag: "EDGE AI",
     href: "#experience",
     tone: "sunrise",
@@ -897,7 +897,7 @@ export const heroShowcaseItems = [
   },
   {
     title: "作品案例",
-    caption: "首页精选与作品抽屉入口",
+    caption: "首页精选 / 作品抽屉",
     tag: "PORTFOLIO",
     href: "#works",
     tone: "studio",
@@ -905,7 +905,7 @@ export const heroShowcaseItems = [
   },
   {
     title: "控制台",
-    caption: "后续接入设备状态与控制指令",
+    caption: "设备状态 / 控制指令",
     tag: "CONSOLE",
     href: "#experience",
     tone: "ember",
@@ -913,7 +913,7 @@ export const heroShowcaseItems = [
   },
   {
     title: "追踪风扇",
-    caption: "蓝牙控制与人体追踪",
+    caption: "蓝牙控制 / 人体追踪",
     tag: "STM32",
     href: "#works",
     tone: "citrus",
@@ -921,7 +921,7 @@ export const heroShowcaseItems = [
   },
   {
     title: "小游戏",
-    caption: "轻交互入口与页面实验",
+    caption: "轻交互 / 页面实验",
     tag: "PLAY LAB",
     href: "#play",
     tone: "room",
