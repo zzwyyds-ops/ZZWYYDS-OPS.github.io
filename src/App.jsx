@@ -174,7 +174,7 @@ function HeroVideo({ children }) {
         loop
         muted
         playsInline
-        poster="/media/hero-poster.svg"
+        poster="/media/hero-poster.png"
         preload="none"
         ref={videoRef}
       >

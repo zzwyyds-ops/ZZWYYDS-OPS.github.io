@@ -2,7 +2,7 @@ const CACHE_VERSION = "embedvision-cache-v3";
 const PRECACHE_URLS = [
   "/",
   "/index.html",
-  "/media/hero-poster.svg",
+  "/media/hero-poster.png",
   "/media/hero-cyberpunk-wallpaper.mp4",
 ];
 
@@ -36,7 +36,7 @@ function shouldCache(request) {
     url.pathname.endsWith(".html") ||
     url.pathname.startsWith("/assets/") ||
     url.pathname.startsWith("/media/optimized/") ||
-    url.pathname === "/media/hero-poster.svg" ||
+    url.pathname === "/media/hero-poster.png" ||
     url.pathname === "/media/hero-cyberpunk-wallpaper.mp4"
   );
 }

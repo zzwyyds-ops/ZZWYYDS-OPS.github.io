@@ -190,7 +190,7 @@ main {
   border-radius: 26px;
   background:
     linear-gradient(180deg, rgba(2, 4, 5, 0.18), rgba(2, 4, 5, 0.78)),
-    url("/media/hero-poster.svg") center / cover no-repeat,
+    url("/media/hero-poster.png") center / cover no-repeat,
     #020403;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
