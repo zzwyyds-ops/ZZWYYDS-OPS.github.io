@@ -459,9 +459,9 @@ main {
   z-index: 2;
   content: "";
   background:
-    radial-gradient(circle at 82% 22%, rgba(216, 255, 63, 0.08), transparent 20rem),
-    linear-gradient(180deg, rgba(2, 4, 5, 0.1) 0%, rgba(2, 4, 5, 0.18) 46%, rgba(2, 4, 5, 0.84) 100%),
-    linear-gradient(90deg, rgba(2, 4, 5, 0.76) 0%, rgba(2, 4, 5, 0.32) 34%, rgba(2, 4, 5, 0.14) 66%);
+    radial-gradient(circle at 78% 22%, rgba(216, 255, 63, 0.08), transparent 20rem),
+    radial-gradient(circle at 20% 28%, rgba(255, 188, 97, 0.06), transparent 22rem),
+    linear-gradient(180deg, rgba(2, 4, 5, 0.06) 0%, rgba(2, 4, 5, 0.16) 44%, rgba(2, 4, 5, 0.8) 100%);
   pointer-events: none;
   transition: opacity 760ms ease;
 }
@@ -546,9 +546,9 @@ main {
 .hero-cinematic-vignette {
   z-index: 1;
   background:
-    radial-gradient(circle at 50% 44%, transparent 0 42%, rgba(2, 4, 5, 0.18) 74%, rgba(2, 4, 5, 0.46) 100%),
-    linear-gradient(180deg, rgba(2, 4, 5, 0.12), transparent 18%, rgba(2, 4, 5, 0.2) 68%, rgba(2, 4, 5, 0.5));
-  opacity: 0.6;
+    radial-gradient(circle at 50% 44%, transparent 0 44%, rgba(2, 4, 5, 0.12) 76%, rgba(2, 4, 5, 0.34) 100%),
+    linear-gradient(180deg, rgba(2, 4, 5, 0.08), transparent 18%, rgba(2, 4, 5, 0.16) 68%, rgba(2, 4, 5, 0.42));
+  opacity: 0.46;
 }
 
 .hero-video-layer.is-unveiled::after {
@@ -3785,20 +3785,22 @@ h3 {
   min-height: 320px;
   display: grid;
   grid-template-columns: 1fr;
-  align-items: end;
+  align-items: stretch;
   gap: 24px;
 }
 
 .contact-copy {
   display: grid;
   gap: 12px;
+  align-content: start;
 }
 
 .contact-link-row {
-  margin-top: 18px;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  align-self: end;
+  justify-self: start;
 }
 
 .contact-chip {
@@ -4636,6 +4638,10 @@ h3 {
   .role-grid,
   .contact-panel {
     grid-template-columns: 1fr;
+  }
+
+  .contact-link-row {
+    align-self: start;
   }
 
   .project-rail-panel {
