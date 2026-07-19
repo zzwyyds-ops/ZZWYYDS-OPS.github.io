@@ -152,6 +152,7 @@ function HeroTitle() {
 function HeroVideo({ children }) {
   const videoRef = useRef(null);
   const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
   const asciiEnabled = useDeferredFeature(2600);
 
   useEffect(() => {
@@ -184,6 +185,30 @@ function HeroVideo({ children }) {
       return undefined;
     }
 
+    setVideoReady(false);
+
+    const markReady = () => setVideoReady(true);
+    const onError = () => setVideoReady(false);
+
+    video.addEventListener("loadeddata", markReady);
+    video.addEventListener("canplay", markReady);
+    video.addEventListener("error", onError);
+    video.load();
+
+    return () => {
+      video.removeEventListener("loadeddata", markReady);
+      video.removeEventListener("canplay", markReady);
+      video.removeEventListener("error", onError);
+    };
+  }, [shouldLoadVideo]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+
+    if (!video || !shouldLoadVideo || !videoReady) {
+      return undefined;
+    }
+
     const updatePlayback = (visible) => {
       if (visible && !document.hidden) {
         video.play().catch(() => {});
@@ -211,7 +236,7 @@ function HeroVideo({ children }) {
       document.removeEventListener("visibilitychange", onVisibilityChange);
       video.pause();
     };
-  }, [shouldLoadVideo]);
+  }, [shouldLoadVideo, videoReady]);
 
   return (
     <div className="hero-video-layer">
