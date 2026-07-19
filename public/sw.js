@@ -1,9 +1,9 @@
-const CACHE_VERSION = "embedvision-cache-v3";
+const CACHE_VERSION = "embedvision-cache-v4";
 const PRECACHE_URLS = [
   "/",
   "/index.html",
   "/media/hero-poster.png",
-  "/media/hero-cyberpunk-wallpaper.mp4",
+  "/media/hero-cyberpunk-wallpaper-1080p.webm",
 ];
 
 self.addEventListener("install", (event) => {
@@ -37,7 +37,7 @@ function shouldCache(request) {
     url.pathname.startsWith("/assets/") ||
     url.pathname.startsWith("/media/optimized/") ||
     url.pathname === "/media/hero-poster.png" ||
-    url.pathname === "/media/hero-cyberpunk-wallpaper.mp4"
+    url.pathname === "/media/hero-cyberpunk-wallpaper-1080p.webm"
   );
 }
 

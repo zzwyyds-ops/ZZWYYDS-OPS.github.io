@@ -179,7 +179,10 @@ function HeroVideo({ children }) {
         ref={videoRef}
       >
         {shouldLoadVideo ? (
-          <source src="/media/hero-cyberpunk-wallpaper.mp4" type="video/mp4" />
+          <>
+            <source src="/media/hero-cyberpunk-wallpaper-1080p.webm" type="video/webm" />
+            <source src="/media/hero-cyberpunk-wallpaper.mp4" type="video/mp4" />
+          </>
         ) : null}
       </video>
       <div className="hero-video-title">
