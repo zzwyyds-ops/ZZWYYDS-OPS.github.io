@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { lazy, startTransition, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
   careerTags,
   capabilityFacts,
@@ -15,6 +15,7 @@ import {
   skillSignals,
 } from "./data/portfolio.js";
 import { GameHubDrawer } from "./components/GameHubDrawer.jsx";
+import CountUp from "./components/CountUp.jsx";
 import { ProjectHubDrawer } from "./components/ProjectHubDrawer.jsx";
 import DotField from "./components/DotField.jsx";
 import {
@@ -27,6 +28,13 @@ const ASCIIText = lazy(() =>
     default: module.ASCIIText,
   })),
 );
+
+const INTRO_PROJECT_IDS = [
+  "tank-4g",
+  "fan-tracking",
+  "wheel-force",
+  "openmv-car",
+];
 
 function useDeferredFeature(delay = 1800) {
   const [enabled, setEnabled] = useState(false);
@@ -129,6 +137,156 @@ function useWarmProjectImages(delay = 2600) {
   }, [delay]);
 }
 
+function useIntroImagesReady(projectIds = INTRO_PROJECT_IDS) {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const imageUrls = projectIds
+      .map((projectId) => projectCases.find((project) => project.id === projectId))
+      .filter(Boolean)
+      .map((project) => project.images?.[0]?.src)
+      .filter(Boolean)
+      .map((src) => getOptimizedProjectImageSrc(src));
+
+    if (!imageUrls.length) {
+      setReady(true);
+      return undefined;
+    }
+
+    let cancelled = false;
+    let completed = 0;
+    const preloaders = [];
+
+    const markDone = () => {
+      completed += 1;
+      if (!cancelled && completed >= imageUrls.length) {
+        setReady(true);
+      }
+    };
+
+    imageUrls.forEach((src) => {
+      const image = new Image();
+      let settled = false;
+
+      const finish = () => {
+        if (settled) {
+          return;
+        }
+
+        settled = true;
+        markDone();
+      };
+
+      image.decoding = "async";
+      image.fetchPriority = "high";
+      image.onload = finish;
+      image.onerror = finish;
+      image.src = src;
+      preloaders.push(image);
+
+      if (image.complete) {
+        queueMicrotask(finish);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      preloaders.forEach((image) => {
+        image.onload = null;
+        image.onerror = null;
+      });
+    };
+  }, [projectIds]);
+
+  return ready;
+}
+
+function useIntroSequence(assetsReady) {
+  const [countTarget, setCountTarget] = useState(0);
+  const [fading, setFading] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const completedRef = useRef(false);
+  const startedAtRef = useRef(Date.now());
+  const fadeTimerRef = useRef(null);
+  const hideTimerRef = useRef(null);
+
+  const completeIntro = useCallback(() => {
+    if (completedRef.current) {
+      return;
+    }
+
+    completedRef.current = true;
+    setCountTarget(100);
+
+    fadeTimerRef.current = window.setTimeout(() => {
+      setFading(true);
+    }, 860);
+
+    hideTimerRef.current = window.setTimeout(() => {
+      startTransition(() => setVisible(false));
+    }, 1560);
+  }, []);
+
+  useEffect(() => {
+    const timers = [
+      window.setTimeout(() => setCountTarget(24), 120),
+      window.setTimeout(() => setCountTarget(48), 560),
+      window.setTimeout(() => setCountTarget(72), 1120),
+      window.setTimeout(() => setCountTarget(91), 1760),
+    ];
+    const forceTimerId = window.setTimeout(() => {
+      completeIntro();
+    }, 5600);
+
+    return () => {
+      timers.forEach((timerId) => window.clearTimeout(timerId));
+      window.clearTimeout(forceTimerId);
+    };
+  }, [completeIntro]);
+
+  useEffect(() => {
+    if (!assetsReady || completedRef.current) {
+      return undefined;
+    }
+
+    const elapsed = Date.now() - startedAtRef.current;
+    const remaining = Math.max(0, 2200 - elapsed);
+    const readyTimerId = window.setTimeout(() => {
+      completeIntro();
+    }, remaining);
+
+    return () => {
+      window.clearTimeout(readyTimerId);
+    };
+  }, [assetsReady, completeIntro]);
+
+  useEffect(() => {
+    if (!visible) {
+      return undefined;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [visible]);
+
+  useEffect(() => {
+    return () => {
+      if (fadeTimerRef.current != null) {
+        window.clearTimeout(fadeTimerRef.current);
+      }
+      if (hideTimerRef.current != null) {
+        window.clearTimeout(hideTimerRef.current);
+      }
+    };
+  }, []);
+
+  return { countTarget, fading, visible };
+}
+
 function HeroTitle() {
   return (
     <h1 className="hero-title">
@@ -149,7 +307,7 @@ function HeroTitle() {
   );
 }
 
-function HeroVideo({ children }) {
+function HeroVideo({ children, introActive, onReadyChange }) {
   const videoRef = useRef(null);
   const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
@@ -203,6 +361,12 @@ function HeroVideo({ children }) {
   }, [shouldLoadVideo]);
 
   useEffect(() => {
+    if (typeof onReadyChange === "function") {
+      onReadyChange(videoReady);
+    }
+  }, [onReadyChange, videoReady]);
+
+  useEffect(() => {
     const video = videoRef.current;
 
     if (!video || !shouldLoadVideo || !videoReady) {
@@ -239,7 +403,9 @@ function HeroVideo({ children }) {
   }, [shouldLoadVideo, videoReady]);
 
   return (
-    <div className="hero-video-layer">
+    <div
+      className={`hero-video-layer ${videoReady ? "is-loaded" : ""} ${introActive ? "" : "is-unveiled"}`}
+    >
       <video
         aria-hidden="true"
         className="hero-video"
@@ -257,6 +423,9 @@ function HeroVideo({ children }) {
           </>
         ) : null}
       </video>
+      <div className="hero-cinematic-haze" aria-hidden="true" />
+      <div className="hero-cinematic-sheen" aria-hidden="true" />
+      <div className="hero-cinematic-vignette" aria-hidden="true" />
       <div className="hero-video-title">
         <HeroTitle />
         <div className="hero-ascii-panel" aria-hidden="true">
@@ -276,6 +445,32 @@ function HeroVideo({ children }) {
         </div>
       </div>
       {children}
+    </div>
+  );
+}
+
+function IntroSplash({ countTarget, fading }) {
+  return (
+    <div className={`intro-overlay ${fading ? "is-fading" : ""}`} role="presentation">
+      <div className="intro-overlay-grid" aria-hidden="true" />
+      <div className="intro-overlay-noise" aria-hidden="true" />
+      <div className="intro-overlay-copy">
+        <p className="intro-kicker">WELCOME TO</p>
+        <h2 className="intro-brand">EMBEDVISION LAB</h2>
+        <p className="intro-subline">Embedded Systems / Machine Vision / AI Workflow</p>
+        <div className="intro-count-shell" aria-label="开屏动画加载进度">
+          <CountUp
+            className="count-up-text"
+            duration={countTarget >= 100 ? 0.82 : 1.18}
+            from={0}
+            separator=""
+            startWhen={true}
+            to={countTarget}
+          />
+          <span className="intro-count-unit">%</span>
+        </div>
+        <p className="intro-caption">系统正在同步首屏资源与背景视频</p>
+      </div>
     </div>
   );
 }
@@ -489,12 +684,12 @@ function ProjectCard({ project, variant = "default", index, onOpenProject }) {
   );
 }
 
-function Hero({ onOpenGames }) {
+function Hero({ introActive, onOpenGames, onVideoReadyChange }) {
   return (
     <section className="hero-shell" id="top">
       <div className="hero-stage">
         <Header onOpenGames={onOpenGames} />
-        <HeroVideo>
+        <HeroVideo introActive={introActive} onReadyChange={onVideoReadyChange}>
           <div className="hero-content">
             <div className="hero-copy">
               <p className="hero-subtitle">{pageCopy.hero.subtitle}</p>
@@ -529,14 +724,7 @@ function ProjectShowcaseRail({ onOpenProject }) {
     userControl: false,
     wasDragging: false,
   });
-  const preferredProjectIds = [
-    "tank-4g",
-    "fan-tracking",
-    "wheel-force",
-    "openmv-car",
-    "pet-feeder",
-    "car-4g-remote",
-  ];
+  const preferredProjectIds = [...INTRO_PROJECT_IDS, "pet-feeder", "car-4g-remote"];
   const showcaseProjects = [
     ...preferredProjectIds
       .map((id) => projectCases.find((project) => project.id === id))
@@ -959,7 +1147,16 @@ function ContactSection() {
           <div className="contact-link-row" aria-label="联系与开源链接">
             <a className="contact-chip contact-chip-email" href={`mailto:${contact.email}`}>
               <span className="contact-chip-icon" aria-hidden="true">
-                QQ
+                <svg
+                  className="qq-mark"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 3.2c-3.62 0-5.86 2.76-5.86 6.52 0 .5.04 1.01.14 1.5-1.48 1.43-2.28 3.31-2.28 5.43 0 1.94 1.18 3.18 2.85 3.18.93 0 1.53-.31 2.32-.98.5 1.13 1.64 1.95 2.83 1.95.77 0 1.55-.34 2-.91.46.57 1.24.91 2 .91 1.2 0 2.34-.82 2.84-1.95.78.67 1.39.98 2.32.98 1.66 0 2.84-1.24 2.84-3.18 0-2.12-.79-4-2.27-5.43.1-.49.14-1 .14-1.5 0-3.76-2.24-6.52-5.87-6.52Zm0 1.86c2.56 0 4.15 1.98 4.15 4.66 0 .58-.08 1.17-.24 1.75l-.11.4.3.28c1.35 1.23 2.07 2.83 2.07 4.53 0 .73-.3 1.32-.95 1.32-.44 0-.82-.18-1.53-.86l-1.27-1.22-.17 1.76c-.1 1.02-.86 1.87-1.48 1.87-.36 0-.69-.16-.93-.46L12 18.4l-.74.85c-.24.3-.57.46-.93.46-.62 0-1.37-.85-1.48-1.87l-.17-1.76-1.27 1.22c-.72.68-1.09.86-1.53.86-.66 0-.96-.59-.96-1.32 0-1.7.73-3.3 2.08-4.53l.3-.28-.12-.4a6.4 6.4 0 0 1-.23-1.75c0-2.68 1.58-4.66 4.15-4.66Z"
+                    fill="currentColor"
+                  />
+                </svg>
               </span>
               <span>{contact.email}</span>
             </a>
@@ -970,7 +1167,16 @@ function ContactSection() {
               target="_blank"
             >
               <span className="contact-chip-icon" aria-hidden="true">
-                GH
+                <svg
+                  className="github-mark"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2C6.477 2 2 6.589 2 12.25c0 4.53 2.865 8.373 6.839 9.73.5.096.683-.222.683-.494 0-.244-.01-1.053-.014-1.909-2.782.618-3.369-1.214-3.369-1.214-.455-1.18-1.111-1.494-1.111-1.494-.908-.637.069-.624.069-.624 1.004.073 1.532 1.054 1.532 1.054.892 1.568 2.341 1.115 2.91.853.09-.664.349-1.116.635-1.373-2.221-.261-4.556-1.139-4.556-5.071 0-1.12.39-2.036 1.029-2.754-.103-.261-.446-1.313.098-2.738 0 0 .84-.276 2.75 1.052A9.29 9.29 0 0 1 12 6.836c.85.004 1.706.118 2.505.347 1.909-1.328 2.748-1.052 2.748-1.052.546 1.425.203 2.477.1 2.738.64.718 1.028 1.634 1.028 2.754 0 3.942-2.339 4.807-4.565 5.063.359.318.678.941.678 1.896 0 1.37-.012 2.473-.012 2.811 0 .274.18.594.688.493C19.138 20.619 22 16.778 22 12.25 22 6.589 17.523 2 12 2Z"
+                    fill="currentColor"
+                  />
+                </svg>
               </span>
               <span>zzwyyds-ops/ZZWYYDS-OPS.github.io</span>
             </a>
@@ -1024,10 +1230,13 @@ export default function App() {
   const [gamesOpen, setGamesOpen] = useState(false);
   const [activeProjectId, setActiveProjectId] = useState(projectCases[0]?.id ?? "");
   const [projectsOpen, setProjectsOpen] = useState(false);
+  const [heroMediaReady, setHeroMediaReady] = useState(false);
+  const introImagesReady = useIntroImagesReady();
 
   useScrollReveal();
   useWarmProjectImages();
   const dotBackgroundActive = useDotBackgroundActive(1400);
+  const introSequence = useIntroSequence(heroMediaReady && introImagesReady);
 
   const openGames = useCallback((gameId = "2048") => {
     setActiveGame(gameId);
@@ -1049,6 +1258,10 @@ export default function App() {
 
   return (
     <>
+      {introSequence.visible ? (
+        <IntroSplash countTarget={introSequence.countTarget} fading={introSequence.fading} />
+      ) : null}
+
       <div className="site-dot-background" aria-hidden="true">
         {dotBackgroundActive ? (
           <DotField
@@ -1065,11 +1278,25 @@ export default function App() {
       </div>
 
       <main className="app-shell">
-        <Hero onOpenGames={openGames} />
-        <RoleSection onOpenProject={openProjects} />
-        <WorksSection onOpenProject={openProjects} onOpenProjects={openProjects} />
-        <ExperienceSection onOpenGames={openGames} />
-        <ContactSection />
+        <Hero
+          introActive={introSequence.visible}
+          onOpenGames={openGames}
+          onVideoReadyChange={setHeroMediaReady}
+        />
+        <div className="immersive-flow-shell">
+          <div className="immersive-flow-backdrop" aria-hidden="true">
+            <span className="immersive-flow-glow immersive-flow-glow-a" />
+            <span className="immersive-flow-glow immersive-flow-glow-b" />
+            <span className="immersive-flow-sheen" />
+          </div>
+
+          <div className="immersive-flow-content">
+            <RoleSection onOpenProject={openProjects} />
+            <WorksSection onOpenProject={openProjects} onOpenProjects={openProjects} />
+            <ExperienceSection onOpenGames={openGames} />
+            <ContactSection />
+          </div>
+        </div>
       </main>
 
       <ProjectHubDrawer
