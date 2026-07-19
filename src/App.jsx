@@ -82,6 +82,53 @@ function useDotBackgroundActive(delay = 1200) {
   return active;
 }
 
+function useWarmProjectImages(delay = 2600) {
+  useEffect(() => {
+    const connection = navigator.connection ?? navigator.mozConnection ?? navigator.webkitConnection;
+
+    if (connection?.saveData) {
+      return undefined;
+    }
+
+    const imageUrls = [
+      ...new Set(
+        projectCases
+          .flatMap((project) => project.images?.slice(0, 2).map((image) => getOptimizedProjectImageSrc(image.src)) ?? [])
+          .filter(Boolean),
+      ),
+    ].slice(0, 18);
+
+    let cancelled = false;
+    let timerId = null;
+
+    const warmNext = (index = 0) => {
+      if (cancelled || index >= imageUrls.length) {
+        return;
+      }
+
+      const image = new Image();
+      image.decoding = "async";
+      image.fetchPriority = "low";
+      image.src = imageUrls[index];
+      timerId = window.setTimeout(() => warmNext(index + 1), 140);
+    };
+
+    const start = () => warmNext();
+    const idleId = window.requestIdleCallback ? window.requestIdleCallback(start, { timeout: delay + 1600 }) : null;
+    timerId = window.setTimeout(start, delay);
+
+    return () => {
+      cancelled = true;
+      if (timerId != null) {
+        window.clearTimeout(timerId);
+      }
+      if (idleId != null && window.cancelIdleCallback) {
+        window.cancelIdleCallback(idleId);
+      }
+    };
+  }, [delay]);
+}
+
 function HeroTitle() {
   return (
     <h1 className="hero-title">
@@ -120,7 +167,7 @@ function HeroVideo({ children }) {
     const idleId = window.requestIdleCallback
       ? window.requestIdleCallback(loadVideo, { timeout: 1800 })
       : null;
-    const timerId = window.setTimeout(loadVideo, 900);
+    const timerId = window.setTimeout(loadVideo, 520);
 
     return () => {
       window.clearTimeout(timerId);
@@ -175,7 +222,7 @@ function HeroVideo({ children }) {
         muted
         playsInline
         poster="/media/hero-poster.png"
-        preload="none"
+        preload={shouldLoadVideo ? "metadata" : "none"}
         ref={videoRef}
       >
         {shouldLoadVideo ? (
@@ -954,6 +1001,7 @@ export default function App() {
   const [projectsOpen, setProjectsOpen] = useState(false);
 
   useScrollReveal();
+  useWarmProjectImages();
   const dotBackgroundActive = useDotBackgroundActive(1400);
 
   const openGames = useCallback((gameId = "2048") => {
