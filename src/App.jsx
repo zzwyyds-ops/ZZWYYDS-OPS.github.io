@@ -57,37 +57,27 @@ function useDeferredFeature(delay = 1800) {
   return enabled;
 }
 
-function useDotBackgroundActive() {
+function useDotBackgroundActive(delay = 1200) {
   const [active, setActive] = useState(false);
 
   useEffect(() => {
-    let frameId = null;
+    const start = () => setActive(!document.hidden);
+    const idleId = window.requestIdleCallback
+      ? window.requestIdleCallback(start, { timeout: delay + 900 })
+      : null;
+    const timerId = window.setTimeout(start, delay);
+    const onVisibilityChange = () => setActive(!document.hidden);
 
-    const update = () => {
-      frameId = null;
-      setActive(!document.hidden && window.scrollY > window.innerHeight * 0.42);
-    };
-    const schedule = () => {
-      if (frameId == null) {
-        frameId = window.requestAnimationFrame(update);
-      }
-    };
-    const onVisibilityChange = () => update();
-
-    update();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
     document.addEventListener("visibilitychange", onVisibilityChange);
 
     return () => {
-      if (frameId != null) {
-        window.cancelAnimationFrame(frameId);
+      window.clearTimeout(timerId);
+      if (idleId != null && window.cancelIdleCallback) {
+        window.cancelIdleCallback(idleId);
       }
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
-  }, []);
+  }, [delay]);
 
   return active;
 }
@@ -961,7 +951,7 @@ export default function App() {
   const [projectsOpen, setProjectsOpen] = useState(false);
 
   useScrollReveal();
-  const dotBackgroundActive = useDotBackgroundActive();
+  const dotBackgroundActive = useDotBackgroundActive(1400);
 
   const openGames = useCallback((gameId = "2048") => {
     setActiveGame(gameId);
